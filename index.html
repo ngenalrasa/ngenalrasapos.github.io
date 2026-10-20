@@ -1,701 +1,798 @@
 <!DOCTYPE html>
-
-<html lang="id"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
-<meta content="mobile_tab" name="shell-type"/>
-<title>Form Hitungan Usaha &amp; Rekap PDF - Ngenal Rasa</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Sistem POS Multi-Cabang & Form 53 Produk - Ngenal Rasa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <!-- Library html2pdf.js untuk auto download file .pdf langsung tanpa perlu printer dialog -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script>
     tailwind.config = {
-      darkMode: "class",
       theme: {
         extend: {
           colors: {
-            "on-secondary": "#ffffff",
-            "inverse-primary": "#ffb3ad",
-            "on-background": "#121c2a",
-            "outline": "#916f6c",
-            "tertiary": "#854600",
-            "on-surface": "#121c2a",
-            "secondary-fixed": "#7ffc97",
-            "primary-container": "#d8232a",
-            "inverse-on-surface": "#eaf1ff",
-            "on-tertiary-fixed-variant": "#6e3900",
-            "surface-variant": "#d9e3f6",
-            "surface-container-low": "#eff4ff",
-            "on-secondary-fixed-variant": "#005320",
-            "tertiary-fixed-dim": "#ffb77d",
-            "surface-container": "#e6eeff",
-            "surface-bright": "#f8f9ff",
-            "on-error": "#ffffff",
-            "on-primary-fixed": "#410003",
-            "outline-variant": "#e5bdb9",
-            "on-error-container": "#93000a",
-            "primary-fixed-dim": "#ffb3ad",
-            "surface-container-highest": "#d9e3f6",
-            "surface-container-high": "#dee9fc",
-            "inverse-surface": "#27313f",
-            "surface-tint": "#bf071b",
-            "on-surface-variant": "#5c403d",
-            "tertiary-fixed": "#ffdcc3",
-            "on-tertiary": "#ffffff",
-            "on-secondary-fixed": "#002109",
-            "on-primary-fixed-variant": "#930011",
-            "error-container": "#ffdad6",
-            "background": "#f8f9ff",
-            "secondary-container": "#dcfce7",
-            "on-secondary-container": "#166534",
-            "on-tertiary-container": "#fff1e9",
-            "primary-fixed": "#ffdad6",
-            "secondary": "#15803d",
-            "surface-container-lowest": "#ffffff",
-            "surface": "#f8f9ff",
-            "on-primary-container": "#fff1ef",
-            "error": "#b91c1c",
-            "primary": "#b20017",
-            "on-tertiary-fixed": "#2f1500",
-            "tertiary-container": "#a95b00",
-            "surface-dim": "#d0dbed",
-            "on-primary": "#ffffff",
-            "secondary-fixed-dim": "#62df7d"
-          },
-          borderRadius: {
-            "DEFAULT": "0.25rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "2xl": "1rem",
-            "full": "9999px"
+            primary: '#b20017',
+            'primary-dark': '#8e0012',
+            secondary: '#007a33',
+            'surface-ground': '#f4f6fa',
           },
           fontFamily: {
-            "body": ["Plus Jakarta Sans", "sans-serif"]
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
           }
         }
       }
     }
   </script>
-<style>
-    @layer base {
-      html, body {
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-      }
-      body {
-        background-color: #f8f9ff;
-        color: #121c2a;
-      }
-      .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
-      .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
-    }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-
-    /* Print styles for perfect ISO A4 export */
+  <style>
     @media print {
       @page {
         size: A4 portrait;
-        margin: 6mm 8mm 6mm 8mm;
+        margin: 6mm 8mm;
       }
       body {
         background: #ffffff !important;
         color: #111827 !important;
-        font-size: 8.5pt !important;
+        font-size: 8pt !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
-      .no-print, header, nav, #interactiveEditor, #actionBanner, #toastNotification, #historyModal {
+      .no-print, header, nav, #appAuthOverlay, #modalUserMgmt, #modalAddBranch, #modalHistory, #interactiveEditor, #actionBanner, #toastNotification {
         display: none !important;
       }
       main {
         padding: 0 !important;
         margin: 0 !important;
-        background: transparent !important;
       }
       #printContainer {
         display: block !important;
         width: 100% !important;
-        min-width: 100% !important;
-        box-shadow: none !important;
         padding: 0 !important;
-        margin: 0 !important;
+        box-shadow: none !important;
         background: transparent !important;
       }
       #a4Sheet {
         width: 100% !important;
-        min-width: 100% !important;
         max-width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
         box-shadow: none !important;
         border: none !important;
-        min-height: auto !important;
-      }
-      .print-break-inside-avoid {
-        break-inside: avoid;
-        page-break-inside: avoid;
       }
     }
   </style>
 </head>
-<body class="bg-surface font-body text-on-surface antialiased flex flex-col min-h-screen">
-<!-- Header -->
-<header class="sticky top-0 w-full z-40 pt-safe bg-surface-container-lowest/95 backdrop-blur-md border-b border-gray-200/80 shadow-sm no-print"><div class="max-w-6xl mx-auto py-2.5 px-4 flex flex-col md:flex-row items-center justify-between gap-3"><div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start"><div class="flex items-center gap-2.5"><div class="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-black text-sm flex-shrink-0">NR</div><div class="flex flex-col min-w-0"><div class="flex items-center gap-2"><span class="font-extrabold text-base text-primary tracking-tight truncate">Ngenal Rasa</span><span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase tracking-wider flex-shrink-0">Multi-Cabang</span></div><span class="text-xs text-gray-500 truncate">Sistem Manajemen Cabang &amp; Hak Akses</span></div></div><div class="flex md:hidden items-center gap-1.5"><span class="px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-bold flex items-center gap-1" id="mobileRoleBadge"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>Owner</span></div></div><div class="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end"><div class="flex items-center bg-gray-100 p-1 rounded-xl border border-gray-200"><label class="text-[11px] font-bold text-gray-600 px-2 flex items-center gap-1 cursor-pointer" for="roleSelect"><span class="material-symbols-outlined text-[15px] text-primary">verified_user</span><span>Akses:</span></label><select class="bg-white text-xs font-bold text-gray-800 border-none rounded-lg py-1 px-2.5 pr-7 focus:ring-1 focus:ring-primary shadow-sm cursor-pointer" id="roleSelect" onchange="changeUserRole(this.value)"><option value="owner">👑 Owner (Akses Penuh)</option><option value="staff">👤 Karyawan / Kasir (Input Terbatas)</option></select></div><button class="h-9 px-3 rounded-xl bg-surface-container-low text-gray-700 border border-gray-300 text-xs font-bold flex items-center gap-1.5 shadow-sm hover:bg-gray-100 active:scale-95 transition-all" onclick="openStaffModal()"><span class="material-symbols-outlined text-[17px] text-primary">manage_accounts</span><span class="hidden sm:inline">Kelola Staf &amp; Akses</span></button><button class="h-9 px-3 rounded-xl bg-surface-container-low text-gray-700 border border-gray-300 text-xs font-bold flex items-center gap-1.5 shadow-sm hover:bg-gray-100 active:scale-95 transition-all" onclick="openHistoryModal()"><span class="material-symbols-outlined text-[17px] text-gray-600">history</span><span class="hidden sm:inline">Histori</span></button><button class="h-9 px-3.5 rounded-xl bg-primary text-white text-xs font-bold flex items-center gap-1.5 shadow-sm hover:bg-primary-container active:scale-95 transition-all" onclick="triggerDownload()"><span class="material-symbols-outlined text-[17px]">picture_as_pdf</span><span class="hidden sm:inline">Export PDF</span></button></div></div></header>
-<main class="flex-1 w-full bg-surface pt-4 pb-20 px-3 sm:px-6">
-<div class="flex flex-col w-full max-w-6xl mx-auto space-y-4">
-<!-- Action & View Controls (No-Print) -->
-<div class="flex flex-col gap-2.5 no-print" id="branchNavigationWrapper"><div class="bg-surface-container-lowest p-2 rounded-2xl shadow-sm border border-gray-200 flex flex-wrap items-center justify-between gap-2"><div class="flex flex-wrap items-center gap-1.5" id="branchTabs"><button class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all bg-gray-100 text-gray-700 hover:bg-gray-200" id="tabBranch-pusat" onclick="switchBranch('pusat')"><span class="material-symbols-outlined text-[17px]">domain</span><span>🏢 Toko Pusat (Konsolidasi)</span></button><button class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all bg-primary text-white shadow-sm" id="tabBranch-alun-alun" onclick="switchBranch('alun-alun')"><span class="material-symbols-outlined text-[17px]">storefront</span><span>Booth Alun-Alun Utara (Pusat Kota)</span></button><button class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all bg-gray-100 text-gray-700 hover:bg-gray-200" id="tabBranch-pasar-sore" onclick="switchBranch('pasar-sore')"><span class="material-symbols-outlined text-[17px]">storefront</span><span>Booth Pasar Sore Kuliner</span></button><button class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all bg-gray-100 text-gray-700 hover:bg-gray-200" id="tabBranch-stasiun" onclick="switchBranch('stasiun')"><span class="material-symbols-outlined text-[17px]">storefront</span><span>Booth Stasiun Kota</span></button><button class="px-3 py-2 rounded-xl text-xs font-bold text-primary border border-dashed border-primary/40 hover:bg-primary/10 flex items-center gap-1 transition-all" onclick="promptAddBranch()"><span class="material-symbols-outlined text-[16px]">add</span><span>Tambah Cabang</span></button></div><div class="flex items-center gap-2 px-2 text-xs font-medium text-gray-500"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span id="activeBranchIndicatorText">Cabang Aktif: Booth Alun-Alun Utara</span></div></div><div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3 text-xs text-emerald-950 flex items-center justify-between gap-3 shadow-sm" id="roleNoticeBanner"><div class="flex items-center gap-2.5 min-w-0"><span class="material-symbols-outlined text-emerald-700 text-[20px] flex-shrink-0">security</span><div class="leading-tight min-w-0"><span class="font-bold block" id="roleNoticeTitle">Mode Akses: 👑 Owner (Akses Penuh Seluruh Cabang &amp; Finansial)</span><span class="text-[11px] text-emerald-800 block truncate" id="roleNoticeDesc">Anda memiliki wewenang mengedit HPP modal, persentase bagi hasil, melihat laba konsolidasi toko pusat, dan mengelola seluruh cabang.</span></div></div><span class="px-2.5 py-1 rounded-lg bg-emerald-200/70 text-emerald-900 text-[10px] font-extrabold uppercase tracking-wide flex-shrink-0" id="roleBadgePill">Owner Akses Penuh</span></div><div class="hidden flex-col gap-4 bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-gray-200 animate-in fade-in duration-150" id="centralDashboardContainer"><div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-gray-100"><div class="flex items-center gap-2.5"><div class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center"><span class="material-symbols-outlined text-[20px]">hub</span></div><div><h2 class="text-sm font-bold text-gray-900">Dashboard Konsolidasi Pusat Toko &amp; Seluruh Cabang</h2><p class="text-xs text-gray-500">Rekapitulasi performa realtime harian gabungan 3 gerai Ngenal Rasa.</p></div></div><div class="flex items-center gap-2"><span class="text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-600"></span>3 Gerai Beroperasi Normal</span></div></div><div class="grid grid-cols-2 sm:grid-cols-4 gap-3"><div class="p-3.5 bg-gray-50 rounded-xl border border-gray-200"><span class="text-[10px] uppercase font-bold text-gray-500 block mb-1">Total Omzet Gabungan</span><span class="text-base font-mono font-extrabold text-primary block">Rp 4.418.500</span><span class="text-[10.5px] text-emerald-700 font-semibold">▲ +12% dibanding kemarin</span></div><div class="p-3.5 bg-gray-50 rounded-xl border border-gray-200"><span class="text-[10px] uppercase font-bold text-gray-500 block mb-1">Total Laba Bersih</span><span class="text-base font-mono font-extrabold text-emerald-700 block">Rp 1.485.400</span><span class="text-[10.5px] text-gray-600">Margin bersih 33.6%</span></div><div class="p-3.5 bg-gray-50 rounded-xl border border-gray-200"><span class="text-[10px] uppercase font-bold text-gray-500 block mb-1">Total Terjual (Laku)</span><span class="text-base font-mono font-extrabold text-gray-900 block">1.082 pcs</span><span class="text-[10.5px] text-gray-600">Dari 53 varian jajanan</span></div><div class="p-3.5 bg-gray-50 rounded-xl border border-gray-200"><span class="text-[10px] uppercase font-bold text-gray-500 block mb-1">Status Rekonsiliasi Kas</span><span class="text-base font-bold text-emerald-700 block">Pas (Cocok)</span><span class="text-[10.5px] text-gray-500">Kas Fisik: Rp 4.418.500</span></div></div><div class="overflow-x-auto rounded-xl border border-gray-200"><table class="w-full min-w-[620px] text-xs"><thead class="bg-gray-100 text-gray-800 text-[11px] font-bold border-b border-gray-200"><tr><th class="p-2.5 text-left">Nama Cabang / Gerai</th><th class="p-2.5 text-left">Penanggung Jawab (Kasir)</th><th class="p-2.5 text-center">Terjual</th><th class="p-2.5 text-center text-red-600">Basi</th><th class="p-2.5 text-right font-extrabold text-primary">Omzet</th><th class="p-2.5 text-right text-emerald-700 font-bold">Laba Bersih</th><th class="p-2.5 text-center">Status Kas</th><th class="p-2.5 text-center">Aksi Cepat</th></tr></thead><tbody class="divide-y divide-gray-100"><tr class="hover:bg-gray-50 transition-colors"><td class="p-2.5 font-bold text-gray-900 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Booth Alun-Alun Utara (Pusat Kota)</td><td class="p-2.5 text-gray-700">Budi Santoso</td><td class="p-2.5 text-center font-mono font-bold">382 pcs</td><td class="p-2.5 text-center font-mono text-red-600">4 pcs</td><td class="p-2.5 text-right font-mono font-bold text-primary">Rp 1.573.500</td><td class="p-2.5 text-right font-mono font-bold text-emerald-700">Rp 538.000</td><td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">Cocok (Pas)</span></td><td class="p-2.5 text-center"><button class="px-2.5 py-1 bg-primary text-white rounded-lg text-[10.5px] font-bold hover:bg-primary-container transition-all" onclick="switchBranch('alun-alun')">Buka Form</button></td></tr><tr class="hover:bg-gray-50 transition-colors"><td class="p-2.5 font-bold text-gray-900 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Booth Pasar Sore Kuliner</td><td class="p-2.5 text-gray-700">Siti Rohani</td><td class="p-2.5 text-center font-mono font-bold">410 pcs</td><td class="p-2.5 text-center font-mono text-red-600">6 pcs</td><td class="p-2.5 text-right font-mono font-bold text-primary">Rp 1.685.000</td><td class="p-2.5 text-right font-mono font-bold text-emerald-700">Rp 562.400</td><td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">Cocok (Pas)</span></td><td class="p-2.5 text-center"><button class="px-2.5 py-1 bg-primary text-white rounded-lg text-[10.5px] font-bold hover:bg-primary-container transition-all" onclick="switchBranch('pasar-sore')">Buka Form</button></td></tr><tr class="hover:bg-gray-50 transition-colors"><td class="p-2.5 font-bold text-gray-900 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Booth Stasiun Kota</td><td class="p-2.5 text-gray-700">Ahmad Fauzi</td><td class="p-2.5 text-center font-mono font-bold">290 pcs</td><td class="p-2.5 text-center font-mono text-red-600">3 pcs</td><td class="p-2.5 text-right font-mono font-bold text-primary">Rp 1.160.000</td><td class="p-2.5 text-right font-mono font-bold text-emerald-700">Rp 385.000</td><td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">Cocok (Pas)</span></td><td class="p-2.5 text-center"><button class="px-2.5 py-1 bg-primary text-white rounded-lg text-[10.5px] font-bold hover:bg-primary-container transition-all" onclick="switchBranch('stasiun')">Buka Form</button></td></tr></tbody></table></div></div></div><div class="flex flex-col gap-3 no-print" id="actionBanner">
-<!-- Info Tip Bar -->
-<div class="bg-amber-50 border border-amber-200/90 rounded-2xl p-3.5 text-xs text-amber-900 flex items-start gap-3 shadow-sm">
-<span class="material-symbols-outlined text-amber-600 text-[22px] flex-shrink-0 mt-0.5">info</span>
-<div class="flex-1 leading-relaxed">
-<strong class="font-bold text-amber-950 block mb-0.5">Formulir Siap Pakai &amp; Otomatis Terkalkulasi:</strong>
-            Semua <b>53 varian jajanan</b> terdaftar sesuai lembar fisik asli. Rumus perhitungan sisa otomatis: <code>Sisa = Awal - (Laku + Basi + Retur)</code>. Masukkan stok awal, laku, dan basi; nilai sisa, omzet kotor, beban modal, laba bersih, serta bagi hasil akan langsung terhitung secara realtime.
+<body class="bg-[#f8f9fc] font-sans text-gray-900 antialiased min-h-screen flex flex-col">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-gray-200 shadow-sm no-print">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center font-black text-sm tracking-tighter shadow-md shadow-primary/20">
+          NR
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-base tracking-tight text-gray-900">Ngenal Rasa</span>
+            <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-red-100 text-primary border border-red-200">POS 53 KUE</span>
+            <span id="roleBadgeHeader" class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300">👑 Owner Pusat</span>
           </div>
-</div>
-<!-- Mode Toggle & Quick Data Buttons -->
-<div class="flex flex-wrap items-center justify-between gap-2 bg-surface-container-lowest p-2 rounded-2xl shadow-sm border border-gray-200">
-<div class="flex items-center gap-1">
-<button class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all bg-primary text-white shadow-sm" id="viewToggleFormBtn" onclick="setViewMode('editor')">
-<span class="material-symbols-outlined text-[17px]">edit_note</span>
-<span>1. Form Input Interaktif</span>
-</button>
-<button class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all text-gray-600 hover:text-gray-900 hover:bg-gray-100" id="viewTogglePreviewBtn" onclick="setViewMode('preview')">
-<span class="material-symbols-outlined text-[17px]">print</span>
-<span>2. Lembar Siap Cetak A4</span>
-</button>
-</div>
-<div class="flex items-center gap-2">
-<button class="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold hover:bg-emerald-100 transition-colors flex items-center gap-1.5" onclick="loadSampleData()">
-<span class="material-symbols-outlined text-[16px] text-emerald-600">auto_fix_high</span>
-<span>Muat Contoh Data</span>
-</button>
-<button class="px-3 py-1.5 rounded-xl bg-gray-100 text-red-600 border border-gray-200 text-xs font-semibold hover:bg-red-50 transition-colors flex items-center gap-1.5" onclick="resetAllQuantitiesToZero()">
-<span class="material-symbols-outlined text-[16px]">restart_alt</span>
-<span>Reset Angka 0</span>
-</button>
-</div>
-</div>
-<!-- Primary Action Buttons (Simpan, Unduh, Cetak, WA) -->
-<div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-<button class="flex items-center justify-center gap-2 py-3 px-3 bg-emerald-700 text-white rounded-2xl text-xs font-bold shadow-md shadow-emerald-700/20 hover:bg-emerald-800 active:scale-95 transition-all" onclick="saveTodayReport()">
-<span class="material-symbols-outlined text-[18px]">save</span>
-<span>Simpan Laporan Hari Ini</span>
-</button>
-<button class="flex items-center justify-center gap-2 py-3 px-3 bg-primary text-white rounded-2xl text-xs font-bold shadow-md shadow-primary/20 hover:bg-primary-container active:scale-95 transition-all" onclick="triggerDownload()">
-<span class="material-symbols-outlined text-[18px]">download</span>
-<span>Unduh PDF</span>
-</button>
-<button class="flex items-center justify-center gap-2 py-3 px-3 bg-surface-container-lowest text-gray-800 border border-gray-300 rounded-2xl text-xs font-bold shadow-sm hover:bg-gray-50 active:scale-95 transition-all" onclick="window.print()">
-<span class="material-symbols-outlined text-[18px]">print</span>
-<span>Cetak Lembar A4</span>
-</button>
-<button class="flex items-center justify-center gap-2 py-3 px-3 bg-emerald-600 text-white rounded-2xl text-xs font-bold shadow-sm hover:bg-emerald-700 active:scale-95 transition-all" onclick="shareWhatsApp()">
-<span class="material-symbols-outlined text-[18px]">chat</span>
-<span>Kirim Ringkasan WA</span>
-</button>
-</div>
-</div>
-<!-- INTERACTIVE DIGITAL INPUT PANEL (NO-PRINT) -->
-<div class="flex flex-col gap-4 no-print" id="interactiveEditor">
-<!-- Card 1: Informasi Dasar Operasional -->
-<div class="bg-surface-container-lowest rounded-2xl p-4 sm:p-5 shadow-sm border border-gray-200">
-<div class="flex items-center justify-between pb-3 mb-4 border-b border-gray-100">
-<div class="flex items-center gap-2.5">
-<span class="w-3 h-3 rounded-full bg-primary inline-block"></span>
-<h2 class="text-sm font-bold text-gray-900">1. Data Gerai &amp; Identitas Dokumen</h2>
-</div>
-<div class="flex items-center gap-2">
-<span class="text-xs font-mono font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-md" id="metaDocNoBadge">NR-20261019-01</span>
-<button class="px-2.5 py-1 text-xs font-bold text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center gap-1 transition-colors" onclick="openHistoryModal()">
-<span class="material-symbols-outlined text-[15px]">history</span>
-<span>Histori</span>
-</button>
-</div>
-</div>
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-<div>
-<label class="block text-xs font-semibold text-gray-700 mb-1">Tanggal Operasional</label>
-<input class="w-full text-xs font-medium bg-gray-50 border border-gray-200 rounded-xl p-2.5 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" id="inputTanggal" oninput="syncFormMeta()" type="date"/>
-</div>
-<div>
-<label class="block text-xs font-semibold text-gray-700 mb-1">Lokasi / Cabang</label>
-<input class="w-full text-xs font-medium bg-gray-50 border border-gray-200 rounded-xl p-2.5 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" id="inputCabang" oninput="syncFormMeta()" placeholder="cth: Booth Alun-Alun Utara" type="text" value="Booth Alun-Alun Utara"/>
-</div>
-<div>
-<label class="block text-xs font-semibold text-gray-700 mb-1">Petugas Kasir / Penjaga</label>
-<input class="w-full text-xs font-medium bg-gray-50 border border-gray-200 rounded-xl p-2.5 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" id="inputKasir" oninput="syncFormMeta()" placeholder="cth: Budi Santoso" type="text" value="Budi Santoso"/>
-</div>
-</div>
-</div>
-<!-- Card 2: Input Aliran Produk Interaktif (53 Items Preloaded) -->
-<div class="bg-surface-container-lowest rounded-2xl p-4 sm:p-5 shadow-sm border border-gray-200">
-<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 mb-3 border-b border-gray-100">
-<div class="flex items-center gap-2.5">
-<span class="w-3 h-3 rounded-full bg-primary inline-block"></span>
-<div>
-<h2 class="text-sm font-bold text-gray-900">2. Input Stok &amp; Penjualan (53 Varian Kue)</h2>
-<p class="text-xs text-gray-500">Sesuai formulir fisik harian Ngenal Rasa (Sisa = Awal - (Laku + Basi + Retur)).</p>
-</div>
-</div>
-<div class="flex items-center gap-2">
-<span class="text-xs bg-primary/10 text-primary font-bold px-3 py-1 rounded-full" id="badgeItemCount">53 Produk Aktif</span>
-</div>
-</div>
-<!-- Filter / Pencarian Cepat Produk -->
-<div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 mb-3.5">
-<div class="sm:col-span-8 relative">
-<span class="material-symbols-outlined absolute left-3 top-2.5 text-gray-400 text-[18px]">search</span>
-<input class="w-full pl-9 pr-9 py-2 text-xs bg-gray-50 rounded-xl border border-gray-200 focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" id="productSearchInput" oninput="filterProductRows()" placeholder="Cari nama kue... misal: Lemper, Roti, Kue Lapis, Pastel" type="text"/>
-<button class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 hidden" id="clearSearchBtn" onclick="clearSearch()">
-<span class="material-symbols-outlined text-[16px]">close</span>
-</button>
-</div>
-<div class="sm:col-span-4 flex items-center gap-2">
-<button class="flex-1 py-2 px-3 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold rounded-xl transition-all flex items-center justify-center gap-1.5" id="filterActiveOnlyBtn" onclick="toggleActiveFilter()">
-<span class="material-symbols-outlined text-[16px]" id="filterActiveIcon">filter_list</span>
-<span id="filterActiveLabel">Hanya yang Terisi</span>
-</button>
-</div>
-</div>
-<div class="overflow-x-auto rounded-xl border border-gray-200 shadow-inner max-h-[460px] overflow-y-auto">
-<table class="w-full min-w-[720px] text-xs">
-<thead class="sticky top-0 bg-gray-100/95 backdrop-blur-sm z-10 shadow-sm">
-<tr class="text-gray-800 text-[11px] font-bold text-center border-b border-gray-200">
-<th class="p-2.5 w-10 text-center">No</th>
-<th class="p-2.5 text-left w-56">Nama Varian Produk</th>
-<th class="p-2.5 w-16">Awal</th>
-<th class="p-2.5 w-16 text-emerald-700 font-extrabold">Laku</th>
-<th class="p-2.5 w-14 text-red-600">Basi</th>
-<th class="p-2.5 w-14">Retur</th>
-<th class="p-2.5 w-14 bg-gray-200/60">Sisa</th>
-<th class="p-2.5 w-24 text-right">Harga Jual</th>
-<th class="p-2.5 w-24 text-right">Modal/HPP</th>
-<th class="p-2.5 w-28 text-right font-extrabold text-primary">Omzet</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-gray-100" id="interactiveProductRows">
-<!-- Rows dynamically rendered by JS -->
-</tbody>
-<tfoot class="sticky bottom-0 bg-gray-100 font-bold text-gray-900 border-t-2 border-gray-300 z-10 shadow-md">
-<tr>
-<td class="p-2.5 text-left" colspan="2">TOTAL KESELURUHAN</td>
-<td class="p-2.5 text-center font-mono" id="totAwal">0</td>
-<td class="p-2.5 text-center font-mono text-emerald-700" id="totLaku">0</td>
-<td class="p-2.5 text-center font-mono text-red-600" id="totBasi">0</td>
-<td class="p-2.5 text-center font-mono" id="totRetur">0</td>
-<td class="p-2.5 text-center font-mono bg-gray-200/60" id="totSisa">0</td>
-<td class="p-2.5 text-right uppercase text-[10px] text-gray-500" colspan="2">Total Kotor Omzet:</td>
-<td class="p-2.5 text-right font-mono text-primary text-sm font-extrabold" id="totOmzet">Rp 0</td>
-</tr>
-</tfoot>
-</table>
-</div>
-<div class="flex items-center justify-between pt-2.5 text-xs text-gray-500">
-<span id="filteredCountInfo">Menampilkan 53 dari 53 produk</span>
-<span class="font-medium text-emerald-700">*Sisa (Awal - (Laku + Basi + Retur)) &amp; Omzet langsung sinkron ke formulir A4</span>
-</div>
-</div>
-<!-- Card 3: Biaya Operasional, Bagi Hasil & Cek Fisik Kas -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-<!-- Biaya & Laba Bersih -->
-<div class="bg-surface-container-lowest rounded-2xl p-4 sm:p-5 shadow-sm border border-gray-200 flex flex-col justify-between">
-<div>
-<div class="flex items-center gap-2 pb-2 mb-3 border-b border-gray-100">
-<span class="w-2.5 h-2.5 rounded-full bg-emerald-600 inline-block"></span>
-<h3 class="text-xs font-bold uppercase tracking-wider text-gray-800">3. Biaya Operasional &amp; Laba</h3>
-</div>
-<div class="space-y-2.5 text-xs">
-<div class="flex items-center justify-between">
-<span class="text-gray-700">Plastik, Mika, Pembungkus:</span>
-<div class="flex items-center gap-1.5">
-<span class="text-gray-400 font-mono text-xs">Rp</span>
-<input class="w-28 text-right p-1.5 text-xs bg-gray-50 rounded-lg border border-gray-200 font-mono font-medium" id="costPlastik" oninput="recalculateAll()" type="number" value="25000"/>
-</div>
-</div>
-<div class="flex items-center justify-between">
-<span class="text-gray-700">Es Batu / Minuman / Bahan:</span>
-<div class="flex items-center gap-1.5">
-<span class="text-gray-400 font-mono text-xs">Rp</span>
-<input class="w-28 text-right p-1.5 text-xs bg-gray-50 rounded-lg border border-gray-200 font-mono font-medium" id="costEs" oninput="recalculateAll()" type="number" value="15000"/>
-</div>
-</div>
-<div class="flex items-center justify-between">
-<span class="text-gray-700">Bensin, Parkir, Lain-lain:</span>
-<div class="flex items-center gap-1.5">
-<span class="text-gray-400 font-mono text-xs">Rp</span>
-<input class="w-28 text-right p-1.5 text-xs bg-gray-50 rounded-lg border border-gray-200 font-mono font-medium" id="costLain" oninput="recalculateAll()" type="number" value="0"/>
-</div>
-</div>
-<div class="pt-3 border-t border-gray-100 space-y-1.5">
-<div class="flex justify-between text-gray-600 text-xs">
-<span>Total Beban Pokok (HPP Kue):</span>
-<span class="font-mono font-bold text-gray-800" id="dispTotalHpp">Rp 0</span>
-</div>
-<div class="flex justify-between text-red-600 text-xs">
-<span>Kerugian Nilai Basi (HPP):</span>
-<span class="font-mono font-bold" id="dispTotalKerugianBasi">Rp 0</span>
-</div>
-<div class="flex justify-between text-gray-900 font-bold bg-emerald-50/70 border border-emerald-200 p-2.5 rounded-xl">
-<span class="text-emerald-950">Laba Bersih Terhitung:</span>
-<span class="font-mono text-emerald-800 text-sm font-extrabold" id="dispLabaBersih">Rp 0</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Bagi Hasil & Audit Kas Kasir -->
-<div class="bg-surface-container-lowest rounded-2xl p-4 sm:p-5 shadow-sm border border-gray-200 flex flex-col justify-between">
-<div>
-<div class="flex items-center justify-between pb-2 mb-3 border-b border-gray-100">
-<div class="flex items-center gap-2">
-<span class="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span>
-<h3 class="text-xs font-bold uppercase tracking-wider text-gray-800">4. Bagi Hasil &amp; Rekonsiliasi Kas</h3>
-</div>
-<span class="text-xs font-extrabold text-primary bg-primary/10 px-2 py-0.5 rounded" id="splitDisplayLabel">60% / 40%</span>
-</div>
-<!-- Slider Bagi Hasil -->
-<div class="mb-3">
-<div class="flex justify-between text-xs text-gray-600 mb-1">
-<span>Pemilik Modal: <b class="text-gray-900" id="lblShareOwner">60%</b></span>
-<span>Pengelola Gerai: <b class="text-gray-900" id="lblShareOperator">40%</b></span>
-</div>
-<input class="w-full accent-primary h-2 bg-gray-200 rounded-lg cursor-pointer" id="shareSlider" max="100" min="0" oninput="recalculateAll()" step="5" type="range" value="60"/>
-<div class="grid grid-cols-2 gap-2.5 mt-2">
-<div class="bg-gray-50 p-2.5 rounded-xl border border-gray-200 text-center">
-<span class="text-[10px] text-gray-500 uppercase font-bold block">Jatah Pemilik Modal</span>
-<span class="font-mono font-extrabold text-xs text-primary" id="valShareOwner">Rp 0</span>
-</div>
-<div class="bg-gray-50 p-2.5 rounded-xl border border-gray-200 text-center">
-<span class="text-[10px] text-gray-500 uppercase font-bold block">Jatah Mitra Pengelola</span>
-<span class="font-mono font-extrabold text-xs text-emerald-700" id="valShareOperator">Rp 0</span>
-</div>
-</div>
-</div>
-<!-- Audit Kas Fisik -->
-<div class="pt-2 border-t border-gray-100">
-<span class="text-xs font-bold text-gray-800 block mb-1">Penghitungan Uang Laci Kasir:</span>
-<div class="grid grid-cols-3 gap-2 text-xs">
-<div>
-<label class="text-[10px] text-gray-500 font-medium block">Uang Kertas</label>
-<input class="w-full p-1.5 text-xs bg-gray-50 rounded-lg border border-gray-200 font-mono font-medium" id="cashPaper" oninput="recalculateAll()" type="number" value="1190000"/>
-</div>
-<div>
-<label class="text-[10px] text-gray-500 font-medium block">Uang Logam</label>
-<input class="w-full p-1.5 text-xs bg-gray-50 rounded-lg border border-gray-200 font-mono font-medium" id="cashCoins" oninput="recalculateAll()" type="number" value="53500"/>
-</div>
-<div>
-<label class="text-[10px] text-gray-500 font-medium block">QRIS/Transfer</label>
-<input class="w-full p-1.5 text-xs bg-gray-50 rounded-lg border border-gray-200 font-mono font-medium" id="cashNonCash" oninput="recalculateAll()" type="number" value="50000"/>
-</div>
-</div>
-<div class="mt-2.5 flex items-center justify-between p-2 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold" id="diffBox">
-<span class="text-[11px]">Selisih Kas Fisik:</span>
-<span class="font-mono" id="dispDiffCash">Rp 0 (Cocok)</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Catatan Tambahan Kasir -->
-<div class="bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-gray-200">
-<label class="block text-xs font-bold text-gray-800 mb-1">Catatan Kejadian / Laporan Lapangan:</label>
-<input class="w-full text-xs bg-gray-50 rounded-xl p-2.5 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary" id="inputCatatan" oninput="syncFormMeta()" type="text" value="Pukul 17:30 sempat gerimis 20 menit namun penjualan tetap ramai. Sisa kue aman tersimpan di etalase kedap udara. Kas fisik terhitung pas."/>
-</div>
-</div>
-<!-- A4 PRINTABLE DOCUMENT CONTAINER -->
-<div class="w-full overflow-x-auto rounded-2xl shadow-md bg-gray-200/70 p-2 sm:p-4" id="printContainer">
-<div class="w-[794px] min-w-[794px] mx-auto bg-white p-7 text-[#111827] font-body text-xs shadow-xl flex flex-col justify-between" id="a4Sheet" style="min-height: 1123px; font-family: 'Plus Jakarta Sans', sans-serif;">
-<!-- Top Section: Kop & Meta -->
-<div>
-<!-- Kop Dokumen Sesuai Lembar Asli Ngenal Rasa -->
-<div class="flex items-center justify-between pb-3 mb-2.5 border-b-2 border-gray-900">
-<div class="flex items-center gap-3">
-<div class="w-12 h-12 rounded-xl bg-primary/10 border-2 border-primary/20 flex items-center justify-center text-primary font-black text-xl flex-shrink-0">
-                  NR
+          <p class="text-xs text-gray-500 truncate" id="subHeaderStatus">Sistem Cloud Multi-Cabang & Manajemen Penjualan</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <!-- Direct Download PDF Button in Header -->
+        <button onclick="downloadDirectPDF()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary hover:bg-primary-dark text-white text-xs font-bold shadow-sm transition-all active:scale-95">
+          <span class="material-symbols-outlined text-[18px]">download</span>
+          <span>Unduh PDF Langsung</span>
+        </button>
+
+        <button onclick="openHistoryModal()" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold shadow-sm transition-all">
+          <span class="material-symbols-outlined text-[18px] text-gray-600">history</span>
+          <span class="hidden sm:inline">Histori</span>
+        </button>
+
+        <button id="btnUserMgmt" onclick="openUserModal()" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold shadow-sm transition-all" title="Kelola Staf & Hak Akses">
+          <span class="material-symbols-outlined text-[18px] text-blue-600">manage_accounts</span>
+          <span class="hidden md:inline">Kelola Staf</span>
+        </button>
+
+        <!-- Current User Profile & Switch / Logout -->
+        <div class="flex items-center gap-2 pl-2 border-l border-gray-200">
+          <div class="text-right hidden sm:block">
+            <p class="text-xs font-bold text-gray-900 leading-tight" id="headerUserName">Hj. Suryaningsih</p>
+            <p class="text-[10px] text-gray-500 font-semibold" id="headerUserBranch">Toko Pusat</p>
+          </div>
+          <button onclick="openAuthModal()" class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-all" title="Ganti Akun / Gerbang Login">
+            <span class="material-symbols-outlined text-[18px]">lock_open</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN BODY -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-5">
+    
+    <!-- CABANG SELECTOR & MANAJEMEN CABANG (OWNER ONLY EDIT) -->
+    <div class="bg-white rounded-2xl p-3.5 sm:p-4 shadow-sm border border-gray-200 mb-4 no-print">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2.5 mb-2.5 border-b border-gray-100">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+          <span class="text-xs font-bold uppercase tracking-wider text-gray-600">Pilih Cabang / Gerai Operasional:</span>
+          <span id="currentBranchIndicator" class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-100 text-emerald-800">Cabang Serayu</span>
+        </div>
+        <div class="flex items-center gap-2" id="branchOwnerControls">
+          <button onclick="openAddBranchModal()" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-primary text-xs font-bold border border-red-200 transition-all">
+            <span class="material-symbols-outlined text-[16px]">add_circle</span>
+            <span>Tambah Cabang</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Branch Chips Container -->
+      <div class="flex flex-wrap items-center gap-2" id="branchChipContainer">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- ACTION BANNER: DOWNLOAD OPTIONS (EXPLICIT & MULTI-FORMAT) -->
+    <div class="bg-gradient-to-r from-red-50 via-white to-amber-50 rounded-2xl p-4 border border-red-200/80 shadow-sm mb-4 no-print" id="actionBanner">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+        <div>
+          <h2 class="text-sm font-extrabold text-gray-900 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-[20px]">file_download</span>
+            Pusat Unduh Dokumen Rekap & Cetak A4 (53 Varian Kue)
+          </h2>
+          <p class="text-xs text-gray-600 mt-0.5">
+            Dua metode download resmi: <b>Unduh File .PDF Langsung</b> ke memori HP/Laptop atau <b>Cetak A4 / Save as PDF</b> via browser.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+          <!-- Button 1: HTML2PDF direct file download -->
+          <button onclick="downloadDirectPDF()" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-bold shadow-md shadow-primary/20 active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-[18px]">download_for_offline</span>
+            <span>1. Unduh File .PDF Langsung</span>
+          </button>
+
+          <!-- Button 2: Browser Print / Save as PDF -->
+          <button onclick="triggerPrintPDF()" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 text-xs font-bold shadow-sm active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-[18px]">print</span>
+            <span>2. Cetak / Simpan PDF</span>
+          </button>
+
+          <!-- Button 3: Download HTML File (Backup offline) -->
+          <button onclick="downloadHTMLFile()" class="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold shadow-sm transition-all" title="Unduh file HTML aplikasi untuk disimpan di HP">
+            <span class="material-symbols-outlined text-[18px]">html</span>
+            <span class="hidden lg:inline">Unduh Web Offline</span>
+          </button>
+
+          <!-- Button 4: Kirim Ringkasan WA -->
+          <button onclick="shareWhatsApp()" class="inline-flex items-center justify-center gap-1 px-3 py-2.5 rounded-xl bg-secondary hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition-all">
+            <span class="material-symbols-outlined text-[18px]">chat</span>
+            <span>Kirim WA</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTERACTIVE INPUT FORM (53 KUE & HITUNGAN USAHA) -->
+    <div class="space-y-4 no-print" id="interactiveEditor">
+      
+      <!-- Card 1: Data Identitas & Tanggal -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-200">
+        <div class="flex items-center justify-between pb-3 mb-3 border-b border-gray-100">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+            <h3 class="text-sm font-bold text-gray-900">1. Data Operasional & Identitas Dokumen</h3>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-mono font-bold text-primary bg-red-50 border border-red-200 px-2.5 py-1 rounded" id="metaDocNoBadge">NR-20261020-01</span>
+            <button onclick="saveCurrentDayReport()" class="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition-all">
+              <span class="material-symbols-outlined text-[16px]">save</span>
+              <span>Simpan Laporan Hari Ini</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Tanggal Operasional</label>
+            <input type="date" id="inputTanggal" onchange="syncFormMeta()" class="w-full text-xs font-medium bg-gray-50 border border-gray-200 rounded-lg p-2 focus:ring-1 focus:ring-primary focus:border-primary"/>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Lokasi Cabang Aktif</label>
+            <input type="text" id="inputCabang" readonly class="w-full text-xs font-bold text-gray-700 bg-gray-100 border border-gray-200 rounded-lg p-2 cursor-not-allowed"/>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Petugas Kasir / Jaga</label>
+            <input type="text" id="inputKasir" oninput="syncFormMeta()" class="w-full text-xs font-medium bg-gray-50 border border-gray-200 rounded-lg p-2 focus:ring-1 focus:ring-primary focus:border-primary" value="Budi Santoso"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Tabel Input 53 Varian Produk (Sesuai Lembar Fisik Asli) -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-200">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 mb-3 border-b border-gray-100">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+              <h3 class="text-sm font-bold text-gray-900">2. Input Stok & Penjualan (53 Varian Produk)</h3>
+            </div>
+            <p class="text-xs text-gray-500">Kolom <b>Masuk</b> telah dihilangkan sesuai permintaan: <code>Sisa = Awal - (Laku + Basi + Retur)</code></p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="loadSampleData()" class="px-2.5 py-1 text-xs font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all flex items-center gap-1">
+              <span class="material-symbols-outlined text-[15px] text-emerald-600">magic_button</span>
+              <span>Muat Data Contoh</span>
+            </button>
+            <button onclick="resetAllQuantitiesToZero()" class="px-2.5 py-1 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-all flex items-center gap-1">
+              <span class="material-symbols-outlined text-[15px]">refresh</span>
+              <span>Reset Angka ke 0</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter & Search Bar -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-2 mb-3">
+          <div class="relative w-full sm:w-80">
+            <span class="material-symbols-outlined absolute left-3 top-2.5 text-gray-400 text-[18px]">search</span>
+            <input type="text" id="productSearchInput" oninput="filterProductRows()" placeholder="Cari nama kue... (Lemper, Pastel, dsb)" class="w-full pl-9 pr-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-1 focus:ring-primary focus:border-primary"/>
+          </div>
+          <button id="btnFilterActive" onclick="toggleActiveFilter()" class="w-full sm:w-auto px-3 py-2 rounded-xl border border-gray-300 bg-white hover:bg-gray-50 text-xs font-semibold text-gray-700 flex items-center justify-center gap-1.5 transition-all">
+            <span class="material-symbols-outlined text-[16px]">filter_list</span>
+            <span id="lblFilterActive">Hanya Tampilkan Yang Terisi</span>
+          </button>
+        </div>
+
+        <!-- Table Container -->
+        <div class="overflow-x-auto rounded-xl border border-gray-200 max-h-[500px]">
+          <table class="w-full text-xs">
+            <thead class="sticky top-0 bg-gray-100 z-10 text-gray-700 font-bold border-b border-gray-200">
+              <tr>
+                <th class="p-2 w-10 text-center">No</th>
+                <th class="p-2 text-left min-w-[180px]">Nama Varian Produk</th>
+                <th class="p-2 w-16 text-center">Awal</th>
+                <th class="p-2 w-16 text-center text-secondary font-bold">Laku</th>
+                <th class="p-2 w-14 text-center text-red-600">Basi</th>
+                <th class="p-2 w-14 text-center">Retur</th>
+                <th class="p-2 w-14 text-center bg-gray-200 text-gray-800">Sisa</th>
+                <th class="p-2 w-24 text-right">Harga Jual</th>
+                <th class="p-2 w-24 text-right role-owner-only">HPP Modal</th>
+                <th class="p-2 w-28 text-right font-bold text-primary">Omzet</th>
+              </tr>
+            </thead>
+            <tbody id="interactiveProductRows" class="divide-y divide-gray-100 bg-white">
+              <!-- Rendered by JS -->
+            </tbody>
+            <tfoot class="sticky bottom-0 bg-gray-100 font-bold text-gray-900 border-t-2 border-gray-300 z-10 shadow-sm">
+              <tr>
+                <td colspan="2" class="p-2 uppercase text-[11px]">TOTAL KESELURUHAN (53 KUE)</td>
+                <td class="p-2 text-center font-mono" id="totAwal">0</td>
+                <td class="p-2 text-center font-mono text-secondary" id="totLaku">0</td>
+                <td class="p-2 text-center font-mono text-red-600" id="totBasi">0</td>
+                <td class="p-2 text-center font-mono" id="totRetur">0</td>
+                <td class="p-2 text-center font-mono" id="totSisa">0</td>
+                <td class="p-2 text-right text-[10px] text-gray-500 uppercase" colspan="1">Total Omzet:</td>
+                <td class="p-2 text-right role-owner-only text-[10px] text-gray-500"></td>
+                <td class="p-2 text-right font-mono text-primary text-sm font-extrabold" id="totOmzet">Rp 0</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+      <!-- Card 3: Biaya Operasional, Pembagian Hasil & Audit Kas -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Biaya & Laba Bersih -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-200">
+          <div class="flex items-center gap-2 pb-2 mb-3 border-b border-gray-100">
+            <span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-gray-800">3. Biaya Operasional & HPP</h3>
+          </div>
+
+          <div class="space-y-2.5 text-xs">
+            <div class="flex items-center justify-between">
+              <span class="text-gray-600">Plastik, Mika, Pembungkus:</span>
+              <div class="flex items-center gap-1">
+                <span class="text-gray-400 font-mono">Rp</span>
+                <input type="number" id="costPlastik" oninput="recalculateAll()" value="25000" class="w-28 text-right p-1.5 text-xs bg-gray-50 rounded border border-gray-200 font-mono"/>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-gray-600">Es Batu / Minuman / Bahan:</span>
+              <div class="flex items-center gap-1">
+                <span class="text-gray-400 font-mono">Rp</span>
+                <input type="number" id="costEs" oninput="recalculateAll()" value="15000" class="w-28 text-right p-1.5 text-xs bg-gray-50 rounded border border-gray-200 font-mono"/>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-gray-600">Bensin, Parkir, Lain-lain:</span>
+              <div class="flex items-center gap-1">
+                <span class="text-gray-400 font-mono">Rp</span>
+                <input type="number" id="costLain" oninput="recalculateAll()" value="0" class="w-28 text-right p-1.5 text-xs bg-gray-50 rounded border border-gray-200 font-mono"/>
+              </div>
+            </div>
+
+            <!-- Bagian ini disensor otomatis jika login kasir -->
+            <div class="pt-2 border-t border-gray-100 space-y-1.5 role-owner-only">
+              <div class="flex justify-between text-gray-600 text-xs">
+                <span>Total Beban Pokok (HPP Modal):</span>
+                <span class="font-mono font-bold" id="dispTotalHpp">Rp 0</span>
+              </div>
+              <div class="flex justify-between text-red-600 text-xs">
+                <span>Kerugian Nilai Basi (HPP):</span>
+                <span class="font-mono font-bold" id="dispTotalKerugianBasi">Rp 0</span>
+              </div>
+              <div class="flex justify-between items-center text-gray-900 font-bold bg-emerald-50 border border-emerald-200 p-2 rounded-lg">
+                <span>Laba Bersih Terhitung:</span>
+                <span class="font-mono text-secondary text-base font-extrabold" id="dispLabaBersih">Rp 0</span>
+              </div>
+            </div>
+
+            <div class="role-cashier-notice hidden p-2 bg-gray-50 rounded text-center text-[11px] text-gray-500 italic">
+              🔒 Rincian HPP Modal dan Laba Bersih dienkripsi (Hanya dapat diakses oleh Owner Pusat).
+            </div>
+          </div>
+        </div>
+
+        <!-- Bagi Hasil & Audit Uang Kas Laci -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-200">
+          <div class="flex items-center justify-between pb-2 mb-3 border-b border-gray-100">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-gray-800">4. Bagi Hasil & Audit Kas Laci</h3>
+            </div>
+            <span class="text-xs font-extrabold text-primary" id="splitDisplayLabel">60% / 40%</span>
+          </div>
+
+          <!-- Slider Bagi Hasil (Owner Controlled) -->
+          <div class="mb-3 role-owner-only">
+            <div class="flex justify-between text-xs text-gray-600 mb-1">
+              <span>Pemilik Modal: <b id="lblShareOwner">60%</b></span>
+              <span>Pengelola Cabang: <b id="lblShareOperator">40%</b></span>
+            </div>
+            <input type="range" id="shareSlider" min="0" max="100" step="5" value="60" oninput="recalculateAll()" class="w-full accent-primary h-2 bg-gray-200 rounded-lg cursor-pointer"/>
+            <div class="grid grid-cols-2 gap-2 mt-2">
+              <div class="bg-gray-50 border border-gray-200 p-2 rounded text-center">
+                <span class="text-[10px] text-gray-500 uppercase font-bold block">Porsi Pemilik Modal</span>
+                <span class="font-mono font-bold text-xs text-primary" id="valShareOwner">Rp 0</span>
+              </div>
+              <div class="bg-gray-50 border border-gray-200 p-2 rounded text-center">
+                <span class="text-[10px] text-gray-500 uppercase font-bold block">Porsi Pengelola</span>
+                <span class="font-mono font-bold text-xs text-secondary" id="valShareOperator">Rp 0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Audit Uang Laci Fisik -->
+          <div class="pt-2 border-t border-gray-100">
+            <span class="text-xs font-bold text-gray-700 block mb-1">Audit Hitungan Uang Laci Kasir:</span>
+            <div class="grid grid-cols-3 gap-2 text-xs">
+              <div>
+                <label class="text-[10px] text-gray-500 block">Uang Kertas</label>
+                <input type="number" id="cashPaper" oninput="recalculateAll()" value="1190000" class="w-full p-1.5 text-xs bg-gray-50 rounded border border-gray-200 font-mono"/>
+              </div>
+              <div>
+                <label class="text-[10px] text-gray-500 block">Uang Logam</label>
+                <input type="number" id="cashCoins" oninput="recalculateAll()" value="53500" class="w-full p-1.5 text-xs bg-gray-50 rounded border border-gray-200 font-mono"/>
+              </div>
+              <div>
+                <label class="text-[10px] text-gray-500 block">QRIS/Transfer</label>
+                <input type="number" id="cashNonCash" oninput="recalculateAll()" value="50000" class="w-full p-1.5 text-xs bg-gray-50 rounded border border-gray-200 font-mono"/>
+              </div>
+            </div>
+
+            <div class="mt-2.5 flex items-center justify-between p-2 rounded-lg bg-emerald-50 text-secondary text-xs font-bold border border-emerald-200" id="diffBox">
+              <span>Selisih Kas Fisik:</span>
+              <span class="font-mono text-sm" id="dispDiffCash">Rp 0 (Cocok)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Catatan Lapangan -->
+      <div class="bg-white rounded-2xl p-3.5 shadow-sm border border-gray-200">
+        <label class="block text-xs font-bold text-gray-700 mb-1">Catatan Tambahan Kasir / Laporan Lapangan:</label>
+        <input type="text" id="inputCatatan" oninput="syncFormMeta()" value="Pukul 17:30 sempat gerimis 20 menit namun penjualan tetap ramai. Sisa kue aman tersimpan di etalase kedap udara. Kas fisik terhitung pas." class="w-full text-xs bg-gray-50 rounded-lg p-2.5 border border-gray-200 focus:bg-white focus:ring-1 focus:ring-primary"/>
+      </div>
+    </div>
+
+    <!-- PREVIEW AREA: DOKUMEN CETAK A4 (TARGET UTAMA CONVERT HTML2PDF) -->
+    <div class="mt-6 mb-12">
+      <div class="flex items-center justify-between mb-3 no-print">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[20px]">description</span>
+          <h3 class="text-sm font-bold text-gray-900">Lembar Kerja Cetak Standar ISO A4 (Pratinjau Asli Dokumen)</h3>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="downloadDirectPDF()" class="inline-flex items-center gap-1 px-3 py-1.5 bg-primary text-white rounded-lg text-xs font-bold shadow hover:bg-primary-dark transition-all">
+            <span class="material-symbols-outlined text-[16px]">file_download</span>
+            <span>Download PDF</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="w-full overflow-x-auto rounded-2xl shadow-md bg-gray-200/80 p-2 sm:p-5" id="printContainer">
+        <!-- Exact ISO A4 Container (794px width) -->
+        <div id="a4Sheet" class="w-[794px] min-w-[794px] mx-auto bg-white p-6 sm:p-7 text-[#111827] text-xs shadow-xl flex flex-col justify-between" style="min-height: 1123px; font-family: 'Plus Jakarta Sans', sans-serif;">
+          
+          <div>
+            <!-- Header Lembar A4 -->
+            <div class="flex items-center justify-between pb-2 mb-2 border-b-2 border-gray-900">
+              <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-lg bg-primary text-white flex items-center justify-center font-black text-lg">NR</div>
+                <div>
+                  <h1 class="text-[17px] font-black tracking-tight text-primary uppercase leading-tight">Ngenal Rasa</h1>
+                  <p class="text-[10px] font-bold text-gray-700 uppercase">Kudapan & Jajanan Tradisional Nusantara</p>
+                  <p class="text-[8.5px] text-gray-500">Lembar Kerja Hitungan Usaha & Rekonsiliasi Penjualan Harian (53 Varian)</p>
                 </div>
-<div class="flex flex-col">
-<span class="text-[17px] font-black tracking-tight text-primary uppercase leading-tight">Ngenal Rasa</span>
-<span class="text-[10.5px] font-bold text-gray-800 uppercase tracking-wide">Kudapan &amp; Jajanan Tradisional Nusantara</span>
-<span class="text-[9px] text-gray-500">Lembar Kerja Hitungan Usaha &amp; Rekonsiliasi Penjualan Harian (53 Varian)</span>
-</div>
-</div>
-<div class="text-right flex flex-col items-end">
-<div class="px-2.5 py-1 bg-primary text-white text-[10.5px] font-black tracking-wider rounded uppercase mb-1">
+              </div>
+              <div class="text-right">
+                <div class="px-2 py-0.5 bg-primary text-white text-[11px] font-bold rounded uppercase mb-0.5">
                   FORM HITUNGAN USAHA (53 PRODUK)
                 </div>
-<div class="text-[9.5px] font-semibold text-gray-800">No. Dokumen: <span class="font-mono text-primary font-extrabold" id="sheetDocNo">NR-20261019-01</span></div>
-<div class="text-[9px] text-gray-500">Status: <span class="text-emerald-700 font-bold uppercase">Terverifikasi Resmi</span></div>
-</div>
-</div>
-<!-- Meta Data Grid -->
-<div class="grid grid-cols-4 gap-2.5 p-2 bg-gray-50 rounded-lg mb-2.5 text-[9.5px] border border-gray-200">
-<div>
-<span class="text-gray-500 block text-[8px] uppercase font-bold tracking-wider">Tanggal Operasional</span>
-<span class="font-bold text-gray-900" id="sheetTanggal">Senin, 19 Okt 2026</span>
-</div>
-<div>
-<span class="text-gray-500 block text-[8px] uppercase font-bold tracking-wider">Lokasi / Cabang</span>
-<span class="font-bold text-gray-900" id="sheetCabang">Booth Alun-Alun Utara</span>
-</div>
-<div>
-<span class="text-gray-500 block text-[8px] uppercase font-bold tracking-wider">Petugas Kasir / Jaga</span>
-<span class="font-bold text-gray-900" id="sheetKasir">Budi Santoso</span>
-</div>
-<div>
-<span class="text-gray-500 block text-[8px] uppercase font-bold tracking-wider">Waktu Ekspor</span>
-<span class="font-mono text-gray-700 font-semibold" id="sheetTimestamp">19/10/2026 21:00 WIB</span>
-</div>
-</div>
-<!-- Section I: Tabel 53 Produk Ringkas Rapi (Tanpa Kolom Masuk) -->
-<div class="mb-2.5">
-<div class="flex items-center justify-between mb-1.5">
-<span class="text-[10px] font-bold uppercase tracking-wider text-gray-900 flex items-center gap-1.5">
-<span class="w-2 h-2 rounded-full bg-primary inline-block"></span> I. Rekapitulasi 53 Varian Produk (Sesuai Urutan Asli)
-                </span>
-<div class="flex items-center gap-2">
-<label class="text-[9px] text-gray-600 cursor-pointer flex items-center gap-1 no-print">
-<input checked="" id="chkShowAllInPrint" onchange="recalculateAll()" type="checkbox"/> Tampilkan Semua 53 Baris
-                  </label>
-<span class="text-[8.5px] text-gray-500 italic">Satuan: Pcs/Bungkus • Standar ISO A4</span>
-</div>
-</div>
-<!-- Tabel Kompak 53 Baris (Tanpa Kolom Masuk) -->
-<table class="w-full text-[8.5px] leading-tight border border-gray-300" style="border-collapse: collapse;">
-<thead>
-<tr class="bg-gray-100 text-gray-800 uppercase font-bold text-[8px] border-b-2 border-gray-400">
-<th class="py-1 px-1 text-center w-6 border-r border-gray-200">No</th>
-<th class="py-1 px-1.5 text-left border-r border-gray-200">Nama Varian Produk</th>
-<th class="py-1 px-1 text-right border-r border-gray-200">Harga</th>
-<th class="py-1 px-1 text-right border-r border-gray-200">Modal</th>
-<th class="py-1 px-1 text-center border-r border-gray-200">Awal</th>
-<th class="py-1 px-1 text-center border-r border-gray-200 font-extrabold text-emerald-700">Laku</th>
-<th class="py-1 px-1 text-center border-r border-gray-200 text-red-600">Basi</th>
-<th class="py-1 px-1 text-center border-r border-gray-200">Retur</th>
-<th class="py-1 px-1 text-center border-r border-gray-200 font-bold bg-gray-50">Sisa</th>
-<th class="py-1 px-1.5 text-right font-extrabold">Omzet</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-gray-200" id="sheetTableBody">
-<!-- Rendered dynamically -->
-</tbody>
-<tfoot>
-<tr class="bg-gray-100 font-extrabold text-gray-900 border-t-2 border-gray-600 text-[8.5px]">
-<td class="py-1 px-1.5 text-left uppercase border-r border-gray-200" colspan="4">TOTAL 53 VARIAN PRODUK</td>
-<td class="py-1 px-1 text-center font-mono border-r border-gray-200" id="sheetTotAwal">0</td>
-<td class="py-1 px-1 text-center font-mono text-emerald-700 border-r border-gray-200" id="sheetTotLaku">0</td>
-<td class="py-1 px-1 text-center font-mono text-red-600 border-r border-gray-200" id="sheetTotBasi">0</td>
-<td class="py-1 px-1 text-center font-mono border-r border-gray-200" id="sheetTotRetur">0</td>
-<td class="py-1 px-1 text-center font-mono border-r border-gray-200 bg-gray-50" id="sheetTotSisa">0</td>
-<td class="py-1 px-1.5 text-right font-mono text-[9.5px] text-primary" id="sheetTotOmzet">Rp 0</td>
-</tr>
-</tfoot>
-</table>
-</div>
-<!-- Section II & III: Laba, Biaya & Bagi Hasil Grid -->
-<div class="grid grid-cols-2 gap-2.5 mb-2 print-break-inside-avoid">
-<!-- Hitungan Laba -->
-<div class="bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-<span class="text-[9.5px] font-bold uppercase tracking-wider text-gray-900 flex items-center gap-1 mb-1.5">
-<span class="w-1.5 h-1.5 rounded-full bg-emerald-700 inline-block"></span> II. Hitungan Laba Kotor &amp; Bersih
-                </span>
-<div class="space-y-0.5 text-[9px]">
-<div class="flex justify-between py-0.5">
-<span class="text-gray-600">Total Omzet Penjualan (A)</span>
-<span class="font-mono font-bold text-gray-900" id="sheetLabaOmzet">Rp 0</span>
-</div>
-<div class="flex justify-between py-0.5">
-<span class="text-gray-600">Beban Pokok Penjualan / Modal (B)</span>
-<span class="font-mono text-gray-800" id="sheetLabaModal">Rp 0</span>
-</div>
-<div class="flex justify-between py-0.5 bg-white px-1.5 rounded font-bold border border-gray-200">
-<span class="text-gray-800">Laba Kotor Operasional (A - B)</span>
-<span class="font-mono text-emerald-700" id="sheetLabaKotor">Rp 0</span>
-</div>
-<div class="pt-0.5 border-t border-gray-200">
-<div class="flex justify-between text-gray-600 text-[8.5px]">
-<span>• Biaya Kemasan &amp; Es Batu</span>
-<span class="font-mono" id="sheetCostOperasional">Rp 0</span>
-</div>
-<div class="flex justify-between text-red-600 text-[8.5px]">
-<span>• Kerugian Basi (<span id="sheetCountBasi">0</span> pcs)</span>
-<span class="font-mono" id="sheetCostBasi">Rp 0</span>
-</div>
-</div>
-<div class="flex justify-between py-1 px-1.5 bg-emerald-50 text-emerald-800 border border-emerald-300 rounded font-bold text-[10px] mt-1">
-<span>LABA BERSIH TERSISA</span>
-<span class="font-mono font-extrabold" id="sheetLabaBersih">Rp 0</span>
-</div>
-</div>
-</div>
-<!-- Alokasi Bagi Hasil & Rekonsiliasi -->
-<div class="bg-gray-50 p-2.5 rounded-lg border border-gray-200 flex flex-col justify-between">
-<div>
-<span class="text-[9.5px] font-bold uppercase tracking-wider text-gray-900 flex items-center gap-1 mb-1.5">
-<span class="w-1.5 h-1.5 rounded-full bg-primary inline-block"></span> III. Bagi Hasil (<span id="sheetSplitRatio">60/40</span>) &amp; Setoran
-                  </span>
-<div class="space-y-0.5 text-[9px]">
-<div class="flex justify-between py-0.5">
-<span class="text-gray-600">Porsi Pemilik Modal (<span id="sheetPctOwner">60%</span>)</span>
-<span class="font-mono font-bold text-gray-900" id="sheetValOwner">Rp 0</span>
-</div>
-<div class="flex justify-between py-0.5">
-<span class="text-gray-600">Porsi Pengelola / Mitra (<span id="sheetPctOperator">40%</span>)</span>
-<span class="font-mono font-bold text-gray-900" id="sheetValOperator">Rp 0</span>
-</div>
-<div class="flex justify-between py-0.5 px-1.5 bg-primary/10 text-primary border border-primary/20 rounded font-bold text-[9px]">
-<span>Total Setoran Fisik Bersih</span>
-<span class="font-mono font-extrabold" id="sheetTotalSetoran">Rp 0</span>
-</div>
-</div>
-</div>
-<!-- Audit Kas Ringkas -->
-<div class="pt-1 mt-1 border-t border-gray-200 flex items-center justify-between text-[8px]">
-<span class="text-gray-600">Kertas: <b class="font-mono" id="sheetCashPaper">Rp 0</b> | Logam: <b class="font-mono" id="sheetCashCoins">Rp 0</b> | Non-Tunai: <b class="font-mono" id="sheetCashQRIS">Rp 0</b></span>
-<span class="font-bold text-emerald-700" id="sheetCashDiff">Selisih: Rp 0 (Cocok)</span>
-</div>
-</div>
-</div>
-<!-- Catatan Lapangan -->
-<div class="bg-gray-50 p-2 rounded-lg border border-gray-200 mb-2 print-break-inside-avoid">
-<span class="text-[8px] font-bold uppercase tracking-wider text-gray-600 block">Catatan Lapangan Kasir:</span>
-<div class="text-[8.5px] text-gray-700 leading-tight italic truncate" id="sheetCatatan">
-                Pukul 17:30 sempat gerimis 20 menit namun penjualan tetap ramai. Sisa kue aman tersimpan di etalase kedap udara. Kas fisik terhitung pas.
+                <div class="text-[9.5px] font-semibold text-gray-800">No. Dokumen: <span class="font-mono text-primary font-bold" id="sheetDocNo">NR-20261020-01</span></div>
+                <div class="text-[8.5px] text-gray-500">Status: <span class="text-secondary font-bold uppercase">TERVERIFIKASI RESMI</span></div>
               </div>
-</div>
-</div>
-<!-- Bottom Section: Tanda Tangan & Footer Standar Dokumen ISO A4 -->
-<div class="print-break-inside-avoid">
-<div class="grid grid-cols-2 gap-8 pt-2 mb-2 border-t border-gray-300">
-<div class="text-center flex flex-col items-center">
-<span class="text-[9px] font-semibold text-gray-700">Dibuat &amp; Diserahkan Oleh,</span>
-<span class="text-[8px] text-gray-400 mb-7">Petugas Kasir &amp; Operasional Booth</span>
-<div class="w-44 pb-0.5 text-center font-bold text-gray-900 text-[9.5px] border-b border-gray-800" id="sheetSignKasir">
+            </div>
+
+            <!-- Meta Data Grid -->
+            <div class="grid grid-cols-4 gap-2 p-1.5 bg-gray-50 rounded mb-2 text-[9.5px] border border-gray-200">
+              <div>
+                <span class="text-gray-500 block text-[8px] uppercase font-bold">Tanggal Operasional</span>
+                <span class="font-bold text-gray-900" id="sheetTanggal">Selasa, 20 Okt 2026</span>
+              </div>
+              <div>
+                <span class="text-gray-500 block text-[8px] uppercase font-bold">Lokasi / Cabang</span>
+                <span class="font-semibold text-gray-900" id="sheetCabang">Cabang Serayu</span>
+              </div>
+              <div>
+                <span class="text-gray-500 block text-[8px] uppercase font-bold">Petugas Kasir</span>
+                <span class="font-semibold text-gray-900" id="sheetKasir">Budi Santoso</span>
+              </div>
+              <div>
+                <span class="text-gray-500 block text-[8px] uppercase font-bold">Waktu Cetak</span>
+                <span class="font-mono text-gray-700" id="sheetTimestamp">20/10/2026 21:00 WIB</span>
+              </div>
+            </div>
+
+            <!-- Table 53 Items in A4 Sheet -->
+            <div class="mb-2">
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-[9.5px] font-bold uppercase tracking-wider text-gray-800 flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-primary inline-block"></span> I. REKAPITULASI 53 VARIAN KUE (URUTAN ASLI)
+                </span>
+                <span class="text-[8.5px] text-gray-500 italic">Satuan: Pcs/Bungkus • Standar ISO A4</span>
+              </div>
+
+              <table class="w-full text-[8.5px] leading-none border border-gray-300" style="border-collapse: collapse;">
+                <thead>
+                  <tr class="bg-gray-100 text-gray-800 uppercase font-bold text-[8px] border-b-2 border-gray-400">
+                    <th class="py-1 px-1 text-center w-6 border-r border-gray-200">No</th>
+                    <th class="py-1 px-1.5 text-left border-r border-gray-200">Nama Kue</th>
+                    <th class="py-1 px-1 text-right border-r border-gray-200">Harga</th>
+                    <th class="py-1 px-1 text-right border-r border-gray-200 role-owner-only">Modal</th>
+                    <th class="py-1 px-1 text-center border-r border-gray-200">Awal</th>
+                    <th class="py-1 px-1 text-center border-r border-gray-200 font-bold text-secondary">Laku</th>
+                    <th class="py-1 px-1 text-center border-r border-gray-200 text-red-600">Basi</th>
+                    <th class="py-1 px-1 text-center border-r border-gray-200">Retur</th>
+                    <th class="py-1 px-1 text-center border-r border-gray-200">Sisa</th>
+                    <th class="py-1 px-1.5 text-right font-bold">Omzet</th>
+                  </tr>
+                </thead>
+                <tbody id="sheetTableBody" class="divide-y divide-gray-200">
+                  <!-- Rendered by JS -->
+                </tbody>
+                <tfoot>
+                  <tr class="bg-gray-100 font-bold text-gray-900 border-t-2 border-gray-600 text-[8.5px]">
+                    <td colspan="4" class="py-1 px-1.5 text-left uppercase border-r border-gray-200" id="sheetFootLabel">TOTAL 53 VARIAN KUE</td>
+                    <td class="py-1 px-1 text-center font-mono border-r border-gray-200" id="sheetTotAwal">0</td>
+                    <td class="py-1 px-1 text-center font-mono text-secondary border-r border-gray-200" id="sheetTotLaku">0</td>
+                    <td class="py-1 px-1 text-center font-mono text-red-600 border-r border-gray-200" id="sheetTotBasi">0</td>
+                    <td class="py-1 px-1 text-center font-mono border-r border-gray-200" id="sheetTotRetur">0</td>
+                    <td class="py-1 px-1 text-center font-mono border-r border-gray-200" id="sheetTotSisa">0</td>
+                    <td class="py-1 px-1.5 text-right font-mono text-[9.5px] text-primary" id="sheetTotOmzet">Rp 0</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            <!-- Financial Summary Grid -->
+            <div class="grid grid-cols-2 gap-2 mb-2">
+              <div class="bg-gray-50 p-2 rounded border border-gray-200">
+                <span class="text-[9px] font-bold uppercase tracking-wider text-gray-800 block mb-1">
+                  ● II. HITUNGAN OPERASIONAL & OMZET
+                </span>
+                <div class="space-y-0.5 text-[9px]">
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Total Omzet Kotor (A)</span>
+                    <span class="font-mono font-semibold" id="sheetLabaOmzet">Rp 0</span>
+                  </div>
+                  <div class="flex justify-between role-owner-only">
+                    <span class="text-gray-600">Beban Pokok Penjualan / HPP (B)</span>
+                    <span class="font-mono" id="sheetLabaModal">Rp 0</span>
+                  </div>
+                  <div class="flex justify-between bg-white px-1 py-0.5 rounded font-bold border border-gray-200 role-owner-only">
+                    <span>Laba Kotor Operasional (A - B)</span>
+                    <span class="font-mono text-secondary" id="sheetLabaKotor">Rp 0</span>
+                  </div>
+                  <div class="text-[8.5px] text-gray-600 pt-0.5">
+                    <div class="flex justify-between">
+                      <span>• Biaya Operasional (Kemasan/Es)</span>
+                      <span class="font-mono" id="sheetCostOperasional">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between text-red-600">
+                      <span>• Kerugian Basi (<span id="sheetCountBasi">0</span>pcs)</span>
+                      <span class="font-mono" id="sheetCostBasi">Rp 0</span>
+                    </div>
+                  </div>
+                  <div class="flex justify-between bg-emerald-50 text-secondary border border-emerald-200 px-1 py-0.5 rounded font-bold text-[9.5px] role-owner-only">
+                    <span>LABA BERSIH TERSISA</span>
+                    <span class="font-mono" id="sheetLabaBersih">Rp 0</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-gray-50 p-2 rounded border border-gray-200 flex flex-col justify-between">
+                <div>
+                  <span class="text-[9px] font-bold uppercase tracking-wider text-gray-800 block mb-1">
+                    ● III. SETORAN & ALOKASI
+                  </span>
+                  <div class="space-y-0.5 text-[9px]">
+                    <div class="flex justify-between role-owner-only">
+                      <span class="text-gray-600">Porsi Pemilik Modal (<span id="sheetPctOwner">60%</span>)</span>
+                      <span class="font-mono font-semibold" id="sheetValOwner">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between role-owner-only">
+                      <span class="text-gray-600">Porsi Pengelola Cabang (<span id="sheetPctOperator">40%</span>)</span>
+                      <span class="font-mono font-semibold" id="sheetValOperator">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between bg-red-50 text-primary border border-red-200 px-1 py-0.5 rounded font-bold text-[9px]">
+                      <span>Total Setoran Fisik Kasir</span>
+                      <span class="font-mono" id="sheetTotalSetoran">Rp 0</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="pt-1 border-t border-gray-200 flex justify-between text-[8px] text-gray-600">
+                  <span>Kertas: <b id="sheetCashPaper">Rp 0</b> | Logam: <b id="sheetCashCoins">Rp 0</b> | QRIS: <b id="sheetCashQRIS">Rp 0</b></span>
+                  <span class="font-bold text-secondary" id="sheetCashDiff">Selisih: Rp 0 (Cocok)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Catatan Lapangan -->
+            <div class="bg-gray-50 p-1.5 rounded border border-gray-200 mb-2">
+              <span class="text-[8px] font-bold uppercase tracking-wider text-gray-600 block">CATATAN LAPANGAN KASIR:</span>
+              <p class="text-[8.5px] text-gray-600 italic leading-snug" id="sheetCatatan">
+                Pukul 17:30 sempat gerimis 20 menit namun penjualan tetap ramai. Sisa kue aman tersimpan di etalase kedap udara. Kas fisik terhitung pas.
+              </p>
+            </div>
+          </div>
+
+          <!-- Bottom: Tanda Tangan ISO A4 -->
+          <div>
+            <div class="grid grid-cols-2 gap-8 pt-2 mb-2 border-t border-gray-300">
+              <div class="text-center">
+                <p class="text-[9px] font-semibold text-gray-700">Dibuat & Diserahkan Oleh,</p>
+                <p class="text-[8px] text-gray-400 mb-6">Petugas Kasir & Operasional Booth</p>
+                <div class="w-44 mx-auto pb-0.5 font-bold text-gray-900 text-[9.5px] border-b border-gray-800" id="sheetSignKasir">
                   ( Budi Santoso )
                 </div>
-<span class="text-[8px] text-gray-500 mt-0.5">Tanggal: <span class="signDateRef">19/10/2026</span></span>
-</div>
-<div class="text-center flex flex-col items-center">
-<span class="text-[9px] font-semibold text-gray-700">Diverifikasi &amp; Diterima Oleh,</span>
-<span class="text-[8px] text-gray-400 mb-7">Pemilik Usaha / Mitra Pengawas</span>
-<div class="w-44 pb-0.5 text-center font-bold text-gray-900 text-[9.5px] border-b border-gray-800">
+                <p class="text-[8px] text-gray-500 mt-0.5">Tanggal: <span class="signDateRef">20/10/2026</span></p>
+              </div>
+
+              <div class="text-center">
+                <p class="text-[9px] font-semibold text-gray-700">Diverifikasi & Diterima Oleh,</p>
+                <p class="text-[8px] text-gray-400 mb-6">Pemilik Usaha / Mitra Pengawas</p>
+                <div class="w-44 mx-auto pb-0.5 font-bold text-gray-900 text-[9.5px] border-b border-gray-800" id="sheetSignOwner">
                   ( Hj. Suryaningsih )
                 </div>
-<span class="text-[8px] text-gray-500 mt-0.5">Tanggal: <span class="signDateRef">19/10/2026</span></span>
-</div>
-</div>
-<div class="flex items-center justify-between text-[7.5px] text-gray-400 pt-1 border-t border-gray-200">
-<span>Sistem Cetak Otomatis Formulir Keuangan Ngenal Rasa • Terintegrasi Master Form 53 Produk</span>
-<span class="font-mono">Lembar Kerja ISO A4 (210mm x 297mm)</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Floating Feedback Toast -->
-<div class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-4 py-2.5 rounded-full shadow-2xl text-xs font-semibold flex items-center gap-2 transition-all opacity-0 pointer-events-none transform translate-y-3 z-50 no-print" id="toastNotification">
-<span class="material-symbols-outlined text-[18px] text-emerald-400">check_circle</span>
-<span id="toastMsg">Tautan PDF siap dicetak</span>
-</div>
-<!-- Modal / Drawer Histori Laporan Harian (No Print) -->
-<div class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5 hidden no-print" id="staffModal"><div class="bg-surface-container-lowest w-full max-w-2xl rounded-2xl shadow-2xl border border-gray-200 flex flex-col max-h-[88vh] overflow-hidden animate-in fade-in zoom-in-95 duration-150"><div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between bg-surface-container-low/50"><div class="flex items-center gap-2.5"><span class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center"><span class="material-symbols-outlined text-[20px]">admin_panel_settings</span></span><div><h3 class="text-sm font-bold text-gray-900">Kelola Staf &amp; Matriks Hak Akses Cabang</h3><p class="text-[11px] text-gray-500">Konfigurasi izin kasir per cabang dan proteksi kerahasiaan HPP modal usaha</p></div></div><button class="w-8 h-8 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 flex items-center justify-center transition-colors" onclick="closeStaffModal()"><span class="material-symbols-outlined text-[20px]">close</span></button></div><div class="p-4 sm:p-5 overflow-y-auto flex-1 space-y-4"><div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-900 flex items-start gap-2.5"><span class="material-symbols-outlined text-amber-600 text-[18px] flex-shrink-0 mt-0.5">shield</span><p class="leading-relaxed"><b>Proteksi Data Sensitif:</b> Karyawan / Kasir hanya berhak mencatat aliran fisik (Awal, Laku, Basi, Retur) dan uang kasir. Angka Modal HPP kue dan persentase bagi hasil pemilik dikunci otomatis.</p></div><div class="overflow-x-auto rounded-xl border border-gray-200"><table class="w-full text-xs"><thead class="bg-gray-100 text-gray-700 font-bold border-b border-gray-200"><tr><th class="p-2.5 text-left">Nama Karyawan</th><th class="p-2.5 text-left">Penugasan Cabang</th><th class="p-2.5 text-center">Role</th><th class="p-2.5 text-center">Akses HPP</th><th class="p-2.5 text-center">Status Akun</th></tr></thead><tbody class="divide-y divide-gray-100"><tr class="hover:bg-gray-50"><td class="p-2.5 font-bold text-gray-900">Hj. Suryaningsih</td><td class="p-2.5 text-gray-600">Semua Cabang (Pusat)</td><td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">👑 Owner</span></td><td class="p-2.5 text-center text-emerald-700 font-bold">✓ Buka</td><td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">Aktif</span></td></tr><tr class="hover:bg-gray-50"><td class="p-2.5 font-bold text-gray-900">Budi Santoso</td><td class="p-2.5 text-gray-600">Booth Alun-Alun Utara</td><td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold text-[10px]">👤 Kasir</span></td><td class="p-2.5 text-center text-red-600 font-bold">✕ Terkunci</td><td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">Aktif</span></td></tr><tr class="hover:bg-gray-50"><td class="p-2.5 font-bold text-gray-900">Siti Rohani</td><td class="p-2.5 text-gray-600">Booth Pasar Sore Kuliner</td><td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold text-[10px]">👤 Kasir</span></td><td class="p-2.5 text-center text-red-600 font-bold">✕ Terkunci</td><td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">Aktif</span></td></tr><tr class="hover:bg-gray-50"><td class="p-2.5 font-bold text-gray-900">Ahmad Fauzi</td><td class="p-2.5 text-gray-600">Booth Stasiun Kota</td><td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold text-[10px]">👤 Kasir</span></td><td class="p-2.5 text-center text-red-600 font-bold">✕ Terkunci</td><td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">Aktif</span></td></tr></tbody></table></div></div><div class="px-5 py-3.5 border-t border-gray-200 bg-gray-50 flex items-center justify-between text-xs"><button class="px-3.5 py-2 bg-primary text-white font-bold rounded-xl hover:bg-primary-container transition-all flex items-center gap-1.5" onclick="showToast('Pengaturan staf dan hak akses tersimpan!'); closeStaffModal();"><span class="material-symbols-outlined text-[16px]">save</span><span>Simpan Pengaturan</span></button><button class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-xl transition-all" onclick="closeStaffModal()">Tutup</button></div></div></div><div class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5 hidden no-print" id="historyModal">
-<div class="bg-surface-container-lowest w-full max-w-2xl rounded-2xl shadow-2xl border border-gray-200 flex flex-col max-h-[88vh] overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-<!-- Modal Header -->
-<div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between bg-surface-container-low/50">
-<div class="flex items-center gap-2.5">
-<span class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
-<span class="material-symbols-outlined text-[20px]">history</span>
-</span>
-<div>
-<h3 class="text-sm font-bold text-gray-900">Histori Laporan Harian Ngenal Rasa</h3>
-<p class="text-[11px] text-gray-500">Tersimpan di memori browser lokal (LocalStorage)</p>
-</div>
-</div>
-<button class="w-8 h-8 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 flex items-center justify-center transition-colors" onclick="closeHistoryModal()">
-<span class="material-symbols-outlined text-[20px]">close</span>
-</button>
-</div>
-<!-- Modal Body: History List -->
-<div class="p-4 sm:p-5 overflow-y-auto flex-1 space-y-3" id="historyListContainer">
-<!-- Dynamically populated or empty state -->
-</div>
-<!-- Modal Footer -->
-<div class="px-5 py-3.5 border-t border-gray-200 bg-gray-50 flex items-center justify-between text-xs">
-<button class="text-red-600 hover:text-red-700 font-semibold flex items-center gap-1 hover:underline" onclick="clearAllHistory()">
-<span class="material-symbols-outlined text-[16px]">delete_sweep</span>
-<span>Hapus Seluruh Histori</span>
-</button>
-<button class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-xl transition-all" onclick="closeHistoryModal()">
-            Tutup
-          </button>
-</div>
-</div>
-</div>
-</main>
-<!-- Interactive Logic Engine -->
-<script>
-    // Exact 53 products ordered exactly 1 to 53 from original document sheet
+                <p class="text-[8px] text-gray-500 mt-0.5">Tanggal: <span class="signDateRef">20/10/2026</span></p>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between text-[7.5px] text-gray-400 pt-1 border-t border-gray-200">
+              <span>Sistem Cetak Otomatis Formulir Keuangan Ngenal Rasa • Terintegrasi Master Form 53 Produk</span>
+              <span class="font-mono">Lembar Kerja ISO A4 (210mm x 297mm)</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL: GERBANG OTENTIKASI (LOGIN & HAK AKSES KETAT) -->
+  <div id="appAuthModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl border border-gray-200 relative animate-in fade-in zoom-in duration-150">
+      <button onclick="closeAuthModal()" class="absolute right-4 top-4 text-gray-400 hover:text-gray-600">
+        <span class="material-symbols-outlined text-[20px]">close</span>
+      </button>
+
+      <div class="text-center mb-5">
+        <div class="w-14 h-14 rounded-2xl bg-primary text-white mx-auto flex items-center justify-center font-black text-xl shadow-lg shadow-primary/20 mb-2">
+          NR
+        </div>
+        <h2 class="text-lg font-black text-gray-900">NGENAL RASA</h2>
+        <p class="text-xs text-gray-500 font-medium">Gerbang Otentikasi POS & Kontrol Hak Akses</p>
+      </div>
+
+      <!-- Error Alert for Unauthorized Email -->
+      <div id="loginErrorAlert" class="hidden mb-3 p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700">
+        <div class="flex items-start gap-2">
+          <span class="material-symbols-outlined text-red-600 text-[18px]">gpp_bad</span>
+          <div>
+            <strong class="font-bold block">Akses Ditolak!</strong>
+            Email atau akun ini belum terdaftar di sistem POS Ngenal Rasa. Silakan hubungi Owner Pusat untuk didaftarkan.
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Switch Testing Buttons -->
+      <div class="space-y-2 mb-4">
+        <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider block">Pilih Akun Terdaftar untuk Masuk:</span>
+        <button onclick="loginAsPreset('owner')" class="w-full p-2.5 rounded-xl border border-amber-300 bg-amber-50/70 hover:bg-amber-100/70 text-left flex items-center justify-between transition-all">
+          <div>
+            <p class="text-xs font-bold text-amber-950 flex items-center gap-1">👑 Hj. Suryaningsih <span class="px-1.5 py-0.2 rounded bg-amber-200 text-[10px]">Owner Pusat</span></p>
+            <p class="text-[11px] text-amber-800">Akses Penuh: HPP Modal, Hapus/Tambah Cabang & Staf</p>
+          </div>
+          <span class="material-symbols-outlined text-amber-700 text-[20px]">arrow_forward</span>
+        </button>
+
+        <button onclick="loginAsPreset('cashier')" class="w-full p-2.5 rounded-xl border border-blue-200 bg-blue-50/70 hover:bg-blue-100/70 text-left flex items-center justify-between transition-all">
+          <div>
+            <p class="text-xs font-bold text-blue-950 flex items-center gap-1">👤 Budi Santoso <span class="px-1.5 py-0.2 rounded bg-blue-200 text-[10px]">Karyawan/Kasir</span></p>
+            <p class="text-[11px] text-blue-800">Cabang Serayu: Input 53 Kue, Simpan Harian & Cetak A4</p>
+          </div>
+          <span class="material-symbols-outlined text-blue-700 text-[20px]">arrow_forward</span>
+        </button>
+      </div>
+
+      <!-- Manual Form Login (Enforces registered check) -->
+      <form onsubmit="handleManualLogin(event)" class="space-y-3 pt-3 border-t border-gray-100 text-xs">
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1">Email Akun Terdaftar</label>
+          <input type="email" id="loginEmailInput" required placeholder="owner@ngenalrasa.id atau kasir@ngenalrasa.id" class="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-primary"/>
+        </div>
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1">Password</label>
+          <input type="password" id="loginPasswordInput" required placeholder="Minimal 6 karakter" class="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-primary"/>
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-primary text-white font-bold hover:bg-primary-dark transition-all shadow-md shadow-primary/20">
+          Masuk ke Sistem POS
+        </button>
+      </form>
+
+      <!-- Testing Button for Unregistered Denial -->
+      <button onclick="simulateUnregisteredLogin()" class="mt-2.5 w-full py-1.5 text-[11px] text-gray-500 hover:text-red-600 font-semibold text-center block">
+        ⚡ Uji Coba Login Akun Tidak Terdaftar (Tolak Akses)
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: KELOLA STAF & HAK AKSES (OWNER ONLY) -->
+  <div id="modalUserMgmt" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-xl rounded-3xl p-6 shadow-2xl border border-gray-200 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-gray-100">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[24px]">manage_accounts</span>
+          <div>
+            <h3 class="text-base font-bold text-gray-900">Kelola Akun & Hak Akses Pengguna</h3>
+            <p class="text-xs text-gray-500">Tambah, ubah nama, ganti peran, atau hapus akses kasir/owner</p>
+          </div>
+        </div>
+        <button onclick="closeUserModal()" class="text-gray-400 hover:text-gray-600">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Add New User Form -->
+      <div class="bg-gray-50 p-3.5 rounded-2xl border border-gray-200 mb-4 text-xs">
+        <h4 class="font-bold text-gray-800 mb-2 flex items-center gap-1">
+          <span class="material-symbols-outlined text-[16px] text-primary">person_add</span>
+          Tambah Pengguna Baru
+        </h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+          <input type="text" id="newUserName" placeholder="Nama Lengkap Staf" class="p-2 bg-white rounded border border-gray-200"/>
+          <input type="email" id="newUserEmail" placeholder="Email Staf (cth: siti@ngenalrasa.id)" class="p-2 bg-white rounded border border-gray-200"/>
+          <select id="newUserRole" class="p-2 bg-white rounded border border-gray-200">
+            <option value="cashier">Karyawan (Kasir Booth)</option>
+            <option value="owner">Owner (Hak Akses Penuh)</option>
+          </select>
+          <select id="newUserBranch" class="p-2 bg-white rounded border border-gray-200">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+        <button onclick="addNewUser()" class="w-full py-2 bg-primary hover:bg-primary-dark text-white font-bold rounded-lg transition-all shadow-sm">
+          + Daftarkan Pengguna Resmi
+        </button>
+      </div>
+
+      <!-- User List -->
+      <div class="space-y-2" id="userListContainer">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: TAMBAH CABANG (OWNER ONLY) -->
+  <div id="modalAddBranch" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-5 shadow-2xl border border-gray-200">
+      <div class="flex items-center justify-between pb-2 mb-3 border-b border-gray-100">
+        <h3 class="text-sm font-bold text-gray-900 flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-primary text-[20px]">store</span>
+          Tambah Cabang / Booth Baru
+        </h3>
+        <button onclick="closeAddBranchModal()" class="text-gray-400 hover:text-gray-600">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+      <div class="space-y-2.5 text-xs">
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1">Nama Cabang / Booth</label>
+          <input type="text" id="newBranchName" placeholder="cth: Booth Stasiun Kota" class="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg"/>
+        </div>
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1">Lokasi / Keterangan</label>
+          <input type="text" id="newBranchLocation" placeholder="cth: Pintu Barat Stasiun" class="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg"/>
+        </div>
+        <button onclick="saveNewBranch()" class="w-full py-2.5 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl transition-all shadow-md shadow-primary/20">
+          Simpan Cabang
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: HISTORI LAPORAN HARIAN -->
+  <div id="modalHistory" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-lg rounded-3xl p-6 shadow-2xl border border-gray-200 max-h-[85vh] flex flex-col">
+      <div class="flex items-center justify-between pb-3 mb-3 border-b border-gray-100">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[22px]">history</span>
+          <div>
+            <h3 class="text-sm font-bold text-gray-900">Histori Penjualan Harian (Tersimpan)</h3>
+            <p class="text-xs text-gray-500">Pilih laporan tanggal sebelumnya untuk dilihat atau dicetak ulang</p>
+          </div>
+        </div>
+        <button onclick="closeHistoryModal()" class="text-gray-400 hover:text-gray-600">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto space-y-2 pr-1" id="historyListContainer">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toastNotification" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-4 py-2.5 rounded-full shadow-2xl text-xs font-semibold flex items-center gap-2 transition-all opacity-0 pointer-events-none transform translate-y-3 z-50 no-print">
+    <span class="material-symbols-outlined text-[18px] text-emerald-400" id="toastIcon">check_circle</span>
+    <span id="toastMsg">File PDF berhasil dibuat!</span>
+  </div>
+
+  <!-- JAVASCRIPT ENGINE DENGAN FITUR DOWNLOAD LANGSUNG & PERMISSIONS -->
+  <script>
+    // 53 Produk Lengkap Urutan Asli
     const master53ProductNames = [
-      "KUE SUS",
-      "BAKPAO",
-      "BOLEN PUSANG",
-      "KUKUS",
-      "DONAT TEBAL",
-      "DONAT TIPIS/GULA",
-      "KUE SEBRA",
-      "KUE GABIN",
-      "KUE PIA",
-      "KUE AMANDEL",
-      "ROTI O",
-      "ROTI PISANG",
-      "ROTI GULUNG",
-      "ROTI SOSIS",
-      "ROTI SUSIR",
-      "PUTU AYU (DESI)",
-      "PASTEL",
-      "KUE CUM-CUM",
-      "BIKANG",
-      "NOGOSARI",
-      "AREM-AREM",
-      "LEMPER BIASA",
-      "LEMPER BAKAR",
-      "LEMPER (SRI)",
-      "ONDE-ONDE",
-      "KELEPON",
-      "KUE CUCUR",
-      "STIK",
-      "KERIPIK",
-      "PUDING",
-      "KUE LAPIS",
-      "JADAH PUTIH",
-      "WAJIK",
-      "RISOLES",
-      "KUE POKIS",
-      "KUE LUMPUR",
-      "KETAN",
-      "MENIRAN",
-      "MARTABAK",
-      "NASI BALI (EMAK)",
-      "JENTIK MANIS",
-      "NASI (ANA)",
-      "SUSU DELE",
-      "DADAR GULUNG",
-      "ROTI SIFON",
-      "BOLU MAWAR",
-      "ROTI MUFFIN",
-      "ROTI COKELAT GARIS",
-      "ROTI BELAH",
-      "ROTI TAMPAH",
-      "ROTI AGAR",
-      "ROTI KEJU BULAT",
-      "ROTI KEJU"
+      "KUE SUS", "BAKPAO", "BOLEN PUSANG", "KUKUS", "DONAT TEBAL",
+      "DONAT TIPIS/GULA", "KUE SEBRA", "KUE GABIN", "KUE PIA", "KUE AMANDEL",
+      "ROTI O", "ROTI PISANG", "ROTI GULUNG", "ROTI SOSIS", "ROTI SUSIR",
+      "PUTU AYU (DESI)", "PASTEL", "KUE CUM-CUM", "BIKANG", "NOGOSARI",
+      "AREM-AREM", "LEMPER BIASA", "LEMPER BAKAR", "LEMPER (SRI)", "ONDE-ONDE",
+      "KELEPON", "KUE CUCUR", "STIK", "KERIPIK", "PUDING",
+      "KUE LAPIS", "JADAH PUTIH", "WAJIK", "RISOLES", "KUE POKIS",
+      "KUE LUMPUR", "KETAN", "MENIRAN", "MARTABAK", "NASI BALI (EMAK)",
+      "JENTIK MANIS", "NASI (ANA)", "SUSU DELE", "DADAR GULUNG", "ROTI SIFON",
+      "BOLU MAWAR", "ROTI MUFFIN", "ROTI COKELAT GARIS", "ROTI BELAH", "ROTI TAMPAH",
+      "ROTI AGAR", "ROTI KEJU BULAT", "ROTI KEJU"
     ];
 
-    // Default prices per variant
     const defaultPrices = {
       "KUE SUS": { harga: 4000, hpp: 2500 },
       "BAKPAO": { harga: 4500, hpp: 3000 },
@@ -752,9 +849,378 @@
       "ROTI KEJU": { harga: 4500, hpp: 2800 }
     };
 
+    // State Cabang
+    let registeredBranches = [
+      { id: "pusat", name: "Toko Pusat (Konsolidasi)", isPusat: true },
+      { id: "serayu", name: "Cabang Serayu", isPusat: false }
+    ];
+    let activeBranchId = "serayu";
+
+    // State Pengguna Terdaftar
+    let registeredUsers = [
+      { id: 1, name: "Hj. Suryaningsih", email: "owner@ngenalrasa.id", role: "owner", branch: "Toko Pusat (Konsolidasi)" },
+      { id: 2, name: "Budi Santoso", email: "kasir@ngenalrasa.id", role: "cashier", branch: "Cabang Serayu" }
+    ];
+    let currentUser = registeredUsers[0]; // Default owner
+
     let products = [];
     let filterActiveOnly = false;
     let searchQuery = "";
+
+    function formatRupiah(num) {
+      return "Rp " + Math.round(num || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    function showToast(msg, icon="check_circle") {
+      const toast = document.getElementById('toastNotification');
+      const label = document.getElementById('toastMsg');
+      const iconEl = document.getElementById('toastIcon');
+      if (toast && label) {
+        label.textContent = msg;
+        if(iconEl) iconEl.textContent = icon;
+        toast.classList.remove('opacity-0', 'translate-y-3', 'pointer-events-none');
+        toast.classList.add('opacity-100', 'translate-y-0');
+        setTimeout(() => {
+          toast.classList.add('opacity-0', 'translate-y-3', 'pointer-events-none');
+          toast.classList.remove('opacity-100', 'translate-y-0');
+        }, 3200);
+      }
+    }
+
+    // ==========================================
+    // 1. SOLUSI DOWNLOAD RESMI (2 METODE KUAT)
+    // ==========================================
+
+    // METODE 1: Auto Download .PDF langsung via html2pdf (Tanpa butuh printer)
+    function downloadDirectPDF() {
+      recalculateAll();
+      showToast("Sedang memproses & mengunduh PDF...", "hourglass_top");
+      
+      const element = document.getElementById('a4Sheet');
+      const docNo = document.getElementById('sheetDocNo').textContent || "Laporan";
+      const branch = document.getElementById('sheetCabang').textContent || "Cabang";
+
+      const opt = {
+        margin:       [6, 6, 6, 6], // mm
+        filename:     `NgenalRasa_${branch.replace(/\s+/g,'_')}_${docNo}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, logging: false },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      if (window.html2pdf) {
+        html2pdf().set(opt).from(element).save().then(() => {
+          showToast("File PDF berhasil terunduh ke perangkat Anda!", "check_circle");
+        }).catch(err => {
+          console.error(err);
+          // Fallback ke window.print jika browser memblokir canvas
+          window.print();
+        });
+      } else {
+        window.print();
+      }
+    }
+
+    // METODE 2: Browser Native Print Dialog
+    function triggerPrintPDF() {
+      recalculateAll();
+      showToast("Membuka menu cetak... Pilih 'Save as PDF' jika ingin simpan", "print");
+      setTimeout(() => {
+        window.print();
+      }, 350);
+    }
+
+    // METODE 3: Download File HTML Lengkap untuk dipakai Offline
+    function downloadHTMLFile() {
+      const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const blob = new Blob([htmlContent], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Sistem_POS_NgenalRasa_${document.getElementById('sheetDocNo').textContent}.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("File Web POS tersimpan. Bisa dibuka langsung di browser HP offline!", "download_done");
+    }
+
+    function shareWhatsApp() {
+      recalculateAll();
+      const docNo = document.getElementById('sheetDocNo').textContent;
+      const omzet = document.getElementById('sheetTotOmzet').textContent;
+      const laba = document.getElementById('sheetLabaBersih').textContent;
+      const kasir = document.getElementById('sheetKasir').textContent;
+      const cabang = document.getElementById('sheetCabang').textContent;
+
+      const text = encodeURIComponent(
+        `*REKAP PENJUALAN 53 KUE NGENAL RASA*\n` +
+        `No: ${docNo}\n` +
+        `Cabang: ${cabang}\n` +
+        `Petugas: ${kasir}\n` +
+        `Total Omzet: ${omzet}\n` +
+        (currentUser.role === 'owner' ? `Laba Bersih: ${laba}\n` : '') +
+        `\nDokumen digital ISO A4 siap diunduh & diverifikasi.`
+      );
+      window.open('https://api.whatsapp.com/send?text=' + text, '_blank');
+    }
+
+    // ==========================================
+    // 2. OTENTIKASI & HAK AKSES PENGGUNA
+    // ==========================================
+
+    function openAuthModal() {
+      document.getElementById('loginErrorAlert').classList.add('hidden');
+      document.getElementById('appAuthModal').classList.remove('hidden');
+    }
+
+    function closeAuthModal() {
+      document.getElementById('appAuthModal').classList.add('hidden');
+    }
+
+    function applyUserRole() {
+      document.getElementById('headerUserName').textContent = currentUser.name;
+      document.getElementById('headerUserBranch').textContent = currentUser.branch;
+      
+      const roleBadge = document.getElementById('roleBadgeHeader');
+      const ownerElements = document.querySelectorAll('.role-owner-only');
+      const cashierNotices = document.querySelectorAll('.role-cashier-notice');
+      const btnUserMgmt = document.getElementById('btnUserMgmt');
+      const branchOwnerControls = document.getElementById('branchOwnerControls');
+
+      if (currentUser.role === 'owner') {
+        roleBadge.className = "px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300";
+        roleBadge.innerHTML = "👑 Owner Pusat";
+        document.getElementById('subHeaderStatus').textContent = "Akses Penuh Seluruh Cabang & Finansial Rahasia";
+
+        ownerElements.forEach(el => el.classList.remove('hidden'));
+        cashierNotices.forEach(el => el.classList.add('hidden'));
+        if (btnUserMgmt) btnUserMgmt.classList.remove('hidden');
+        if (branchOwnerControls) branchOwnerControls.classList.remove('hidden');
+      } else {
+        roleBadge.className = "px-2 py-0.5 rounded text-[11px] font-bold bg-blue-100 text-blue-900 border border-blue-200";
+        roleBadge.innerHTML = "👤 Karyawan (Kasir)";
+        document.getElementById('subHeaderStatus').textContent = `Kasir Operasional: ${currentUser.branch}`;
+
+        ownerElements.forEach(el => el.classList.add('hidden'));
+        cashierNotices.forEach(el => el.classList.remove('hidden'));
+        if (btnUserMgmt) btnUserMgmt.classList.add('hidden');
+        if (branchOwnerControls) branchOwnerControls.classList.add('hidden');
+      }
+
+      renderBranchChips();
+      renderProductInputs();
+      recalculateAll();
+    }
+
+    function loginAsPreset(type) {
+      if (type === 'owner') {
+        currentUser = registeredUsers.find(u => u.role === 'owner') || registeredUsers[0];
+      } else {
+        currentUser = registeredUsers.find(u => u.role === 'cashier') || registeredUsers[1];
+      }
+      closeAuthModal();
+      applyUserRole();
+      showToast(`Login berhasil sebagai ${currentUser.name} (${currentUser.role === 'owner' ? 'Owner' : 'Kasir'})`);
+    }
+
+    function handleManualLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmailInput').value.trim().toLowerCase();
+      const match = registeredUsers.find(u => u.email.toLowerCase() === email);
+
+      if (match) {
+        currentUser = match;
+        closeAuthModal();
+        applyUserRole();
+        showToast(`Selamat datang kembali, ${match.name}!`);
+      } else {
+        document.getElementById('loginErrorAlert').classList.remove('hidden');
+      }
+    }
+
+    function simulateUnregisteredLogin() {
+      document.getElementById('loginEmailInput').value = "penyusup@luar.com";
+      document.getElementById('loginPasswordInput').value = "123456";
+      document.getElementById('loginErrorAlert').classList.remove('hidden');
+      showToast("Akses ditolak! Email tidak ada di database Ngenal Rasa.", "gpp_bad");
+    }
+
+    // ==========================================
+    // 3. KELOLA CABANG (TAMBAH & HAPUS)
+    // ==========================================
+
+    function renderBranchChips() {
+      const container = document.getElementById('branchChipContainer');
+      container.innerHTML = '';
+
+      registeredBranches.forEach(b => {
+        const isActive = (b.id === activeBranchId);
+        const chip = document.createElement('div');
+        chip.className = `inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+          isActive 
+            ? 'bg-primary text-white shadow-sm' 
+            : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+        }`;
+
+        chip.innerHTML = `
+          <button onclick="selectBranch('${b.id}')" class="flex items-center gap-1">
+            <span class="material-symbols-outlined text-[16px]">${b.isPusat ? 'apartment' : 'storefront'}</span>
+            <span>${b.name}</span>
+          </button>
+          ${(!b.isPusat && currentUser.role === 'owner') ? `
+            <button onclick="deleteBranch('${b.id}', event)" class="hover:text-red-300 ml-1 p-0.5 rounded" title="Hapus Cabang">
+              <span class="material-symbols-outlined text-[14px]">delete</span>
+            </button>
+          ` : ''}
+        `;
+        container.appendChild(chip);
+      });
+
+      const activeB = registeredBranches.find(b => b.id === activeBranchId);
+      if (activeB) {
+        document.getElementById('currentBranchIndicator').textContent = activeB.name;
+        document.getElementById('inputCabang').value = activeB.name;
+        document.getElementById('sheetCabang').textContent = activeB.name;
+      }
+    }
+
+    function selectBranch(id) {
+      activeBranchId = id;
+      renderBranchChips();
+      syncFormMeta();
+      showToast(`Beralih ke ${document.getElementById('inputCabang').value}`);
+    }
+
+    function openAddBranchModal() {
+      document.getElementById('modalAddBranch').classList.remove('hidden');
+    }
+    function closeAddBranchModal() {
+      document.getElementById('modalAddBranch').classList.add('hidden');
+    }
+
+    function saveNewBranch() {
+      const name = document.getElementById('newBranchName').value.trim();
+      if (!name) return alert('Nama cabang harus diisi!');
+
+      const newId = 'branch_' + Date.now();
+      registeredBranches.push({ id: newId, name: name, isPusat: false });
+      activeBranchId = newId;
+
+      closeAddBranchModal();
+      document.getElementById('newBranchName').value = '';
+      renderBranchChips();
+      populateBranchDropdown();
+      showToast(`Cabang "${name}" berhasil ditambahkan!`);
+    }
+
+    function deleteBranch(id, e) {
+      e.stopPropagation();
+      if (!confirm('Yakin ingin menghapus cabang ini?')) return;
+      registeredBranches = registeredBranches.filter(b => b.id !== id);
+      activeBranchId = 'pusat';
+      renderBranchChips();
+      populateBranchDropdown();
+      showToast('Cabang berhasil dihapus.');
+    }
+
+    // ==========================================
+    // 4. KELOLA PENGGUNA (TAMBAH / GANTI / HAPUS)
+    // ==========================================
+
+    function openUserModal() {
+      populateBranchDropdown();
+      renderUserList();
+      document.getElementById('modalUserMgmt').classList.remove('hidden');
+    }
+    function closeUserModal() {
+      document.getElementById('modalUserMgmt').classList.add('hidden');
+    }
+
+    function populateBranchDropdown() {
+      const select = document.getElementById('newUserBranch');
+      select.innerHTML = '';
+      registeredBranches.forEach(b => {
+        const opt = document.createElement('option');
+        opt.value = b.name;
+        opt.textContent = b.name;
+        select.appendChild(opt);
+      });
+    }
+
+    function renderUserList() {
+      const container = document.getElementById('userListContainer');
+      container.innerHTML = '';
+
+      registeredUsers.forEach(u => {
+        const item = document.createElement('div');
+        item.className = 'p-3 bg-gray-50 border border-gray-200 rounded-xl flex items-center justify-between text-xs';
+        item.innerHTML = `
+          <div>
+            <p class="font-bold text-gray-900 flex items-center gap-1.5">
+              ${u.role === 'owner' ? '👑' : '👤'} ${u.name}
+              <span class="px-2 py-0.2 rounded text-[10px] font-bold ${u.role === 'owner' ? 'bg-amber-100 text-amber-900' : 'bg-blue-100 text-blue-900'}">${u.role.toUpperCase()}</span>
+            </p>
+            <p class="text-gray-500 text-[11px]">${u.email} • ${u.branch}</p>
+          </div>
+          <div class="flex items-center gap-1">
+            <button onclick="editUserName(${u.id})" class="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 text-[11px] font-semibold">Ganti Nama</button>
+            ${registeredUsers.length > 1 && u.id !== currentUser.id ? `
+              <button onclick="deleteUser(${u.id})" class="px-2 py-1 bg-red-50 text-red-600 border border-red-200 rounded hover:bg-red-100 text-[11px] font-semibold">Hapus</button>
+            ` : ''}
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function addNewUser() {
+      const name = document.getElementById('newUserName').value.trim();
+      const email = document.getElementById('newUserEmail').value.trim();
+      const role = document.getElementById('newUserRole').value;
+      const branch = document.getElementById('newUserBranch').value;
+
+      if (!name || !email) return alert('Nama dan email wajib diisi!');
+
+      registeredUsers.push({
+        id: Date.now(),
+        name: name,
+        email: email,
+        role: role,
+        branch: branch
+      });
+
+      document.getElementById('newUserName').value = '';
+      document.getElementById('newUserEmail').value = '';
+      renderUserList();
+      showToast(`Pengguna "${name}" berhasil didaftarkan!`);
+    }
+
+    function editUserName(id) {
+      const u = registeredUsers.find(x => x.id === id);
+      if (!u) return;
+      const newName = prompt(`Ubah nama untuk ${u.name}:`, u.name);
+      if (newName && newName.trim()) {
+        u.name = newName.trim();
+        if (currentUser.id === id) {
+          currentUser.name = u.name;
+          applyUserRole();
+        }
+        renderUserList();
+        showToast('Nama pengguna berhasil diperbarui!');
+      }
+    }
+
+    function deleteUser(id) {
+      if (!confirm('Yakin ingin mencabut hak akses pengguna ini?')) return;
+      registeredUsers = registeredUsers.filter(x => x.id !== id);
+      renderUserList();
+      showToast('Akses pengguna berhasil dihapus.');
+    }
+
+    // ==========================================
+    // 5. MASTER DATA 53 PRODUK & REKAP
+    // ==========================================
 
     function init53Products(isSample = false) {
       products = master53ProductNames.map((name, index) => {
@@ -767,15 +1233,15 @@
         let retur = 0;
 
         if (isSample) {
-          if (pNum === 1) { awal = 50; laku = 45; basi = 1; retur = 0; }
-          else if (pNum === 2) { awal = 40; laku = 38; basi = 0; retur = 0; }
-          else if (pNum === 3) { awal = 30; laku = 28; basi = 0; retur = 0; }
-          else if (pNum === 17) { awal = 60; laku = 55; basi = 1; retur = 0; }
-          else if (pNum === 21) { awal = 40; laku = 38; basi = 0; retur = 0; }
-          else if (pNum === 23) { awal = 60; laku = 56; basi = 1; retur = 0; }
-          else if (pNum === 31) { awal = 45; laku = 42; basi = 1; retur = 0; }
-          else if (pNum === 34) { awal = 50; laku = 48; basi = 0; retur = 0; }
-          else if (pNum === 44) { awal = 35; laku = 32; basi = 0; retur = 0; }
+          if (pNum === 1) { awal = 50; laku = 45; basi = 1; }
+          else if (pNum === 2) { awal = 40; laku = 38; basi = 0; }
+          else if (pNum === 3) { awal = 30; laku = 28; basi = 0; }
+          else if (pNum === 17) { awal = 60; laku = 55; basi = 1; }
+          else if (pNum === 21) { awal = 40; laku = 38; basi = 0; }
+          else if (pNum === 23) { awal = 60; laku = 56; basi = 1; }
+          else if (pNum === 31) { awal = 45; laku = 42; basi = 1; }
+          else if (pNum === 34) { awal = 50; laku = 48; basi = 0; }
+          else if (pNum === 44) { awal = 35; laku = 32; basi = 0; }
         }
 
         return {
@@ -792,54 +1258,10 @@
       });
     }
 
-    function formatRupiah(num) {
-      return "Rp " + Math.round(num || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById('toastNotification');
-      const label = document.getElementById('toastMsg');
-      if (toast && label) {
-        label.textContent = msg;
-        toast.classList.remove('opacity-0', 'translate-y-3', 'pointer-events-none');
-        toast.classList.add('opacity-100', 'translate-y-0');
-        setTimeout(() => {
-          toast.classList.add('opacity-0', 'translate-y-3', 'pointer-events-none');
-          toast.classList.remove('opacity-100', 'translate-y-0');
-        }, 2600);
-      }
-    }
-
-    function setViewMode(mode) {
-      const editorBtn = document.getElementById('viewToggleFormBtn');
-      const previewBtn = document.getElementById('viewTogglePreviewBtn');
-      const printContainer = document.getElementById('printContainer');
-
-      if (mode === 'preview') {
-        editorBtn.className = 'px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all text-gray-600 hover:text-gray-900 hover:bg-gray-100';
-        previewBtn.className = 'px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all bg-primary text-white shadow-sm';
-        printContainer.scrollIntoView({ behavior: 'smooth' });
-        showToast('Menampilkan Lembar Cetak A4 (53 Produk)');
-      } else {
-        editorBtn.className = 'px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all bg-primary text-white shadow-sm';
-        previewBtn.className = 'px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all text-gray-600 hover:text-gray-900 hover:bg-gray-100';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    }
-
-    function initDate() {
-      const today = new Date();
-      const yyyy = today.getFullYear();
-      const mm = String(today.getMonth() + 1).padStart(2, '0');
-      const dd = String(today.getDate()).padStart(2, '0');
-      document.getElementById('inputTanggal').value = `${yyyy}-${mm}-${dd}`;
-      syncFormMeta();
-    }
-
     function syncFormMeta() {
       const tglVal = document.getElementById('inputTanggal').value;
-      const cabangVal = document.getElementById('inputCabang').value || 'Booth Ngenal Rasa';
-      const kasirVal = document.getElementById('inputKasir').value || 'Petugas Kasir';
+      const cabangVal = document.getElementById('inputCabang').value || 'Cabang Serayu';
+      const kasirVal = document.getElementById('inputKasir').value || 'Budi Santoso';
       const catatanVal = document.getElementById('inputCatatan').value || '-';
 
       let formattedDate = tglVal;
@@ -859,7 +1281,7 @@
       document.querySelectorAll('.signDateRef').forEach(el => el.textContent = dateNumeric);
 
       const yymmdd = (tglVal || '').replace(/-/g, '');
-      const docCode = `NR-${yymmdd || '20261019'}-01`;
+      const docCode = `NR-${yymmdd || '20261020'}-01`;
       document.getElementById('sheetDocNo').textContent = docCode;
       document.getElementById('metaDocNoBadge').textContent = docCode;
 
@@ -868,166 +1290,66 @@
       document.getElementById('sheetTimestamp').textContent = timeStr;
     }
 
-    function loadSampleData() {
-      init53Products(true);
-      document.getElementById('costPlastik').value = 25000;
-      document.getElementById('costEs').value = 15000;
-      document.getElementById('costLain').value = 0;
-      document.getElementById('shareSlider').value = 60;
-      document.getElementById('cashPaper').value = 1190000;
-      document.getElementById('cashCoins').value = 53500;
-      document.getElementById('cashNonCash').value = 50000;
-      document.getElementById('inputCatatan').value = "Pukul 17:30 sempat gerimis 20 menit namun penjualan tetap ramai. Sisa kue aman tersimpan di etalase kedap udara. Kas fisik terhitung pas.";
-
-      renderProductInputs();
-      recalculateAll();
-      showToast('Data contoh 53 produk berhasil dimuat!');
-    }
-
-    function resetAllQuantitiesToZero() {
-      products.forEach(p => {
-        p.awal = 0;
-        p.laku = 0;
-        p.basi = 0;
-        p.retur = 0;
-      });
-      document.getElementById('costPlastik').value = 0;
-      document.getElementById('costEs').value = 0;
-      document.getElementById('costLain').value = 0;
-      document.getElementById('cashPaper').value = 0;
-      document.getElementById('cashCoins').value = 0;
-      document.getElementById('cashNonCash').value = 0;
-      document.getElementById('inputCatatan').value = "";
-
-      renderProductInputs();
-      recalculateAll();
-      showToast('Semua angka di-reset ke 0. Nama 53 produk tetap utuh.');
-    }
-
-    function updateProductField(id, field, value) {
-      const item = products.find(p => p.id === id);
-      if (!item) return;
-
-      if (field === 'name') {
-        item.name = value;
-      } else {
-        item[field] = parseFloat(value) || 0;
-      }
-      recalculateAll();
-    }
-
-    function filterProductRows() {
-      const q = document.getElementById('productSearchInput').value.trim().toLowerCase();
-      searchQuery = q;
-      const clearBtn = document.getElementById('clearSearchBtn');
-      if (q) {
-        clearBtn.classList.remove('hidden');
-      } else {
-        clearBtn.classList.add('hidden');
-      }
-      renderProductInputs();
-    }
-
-    function clearSearch() {
-      document.getElementById('productSearchInput').value = '';
-      searchQuery = '';
-      document.getElementById('clearSearchBtn').classList.add('hidden');
-      renderProductInputs();
-    }
-
-    function toggleActiveFilter() {
-      filterActiveOnly = !filterActiveOnly;
-      const btn = document.getElementById('filterActiveOnlyBtn');
-      const icon = document.getElementById('filterActiveIcon');
-      const label = document.getElementById('filterActiveLabel');
-
-      if (filterActiveOnly) {
-        btn.className = 'flex-1 py-2 px-3 bg-primary text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-sm';
-        icon.textContent = 'check';
-        label.textContent = 'Hanya Terisi (Aktif)';
-        showToast('Memfilter produk dengan stok atau penjualan');
-      } else {
-        btn.className = 'flex-1 py-2 px-3 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold rounded-xl transition-all flex items-center justify-center gap-1.5';
-        icon.textContent = 'filter_list';
-        label.textContent = 'Hanya yang Terisi';
-      }
-      renderProductInputs();
-    }
-
-    function escapeHtml(str) {
-      if (!str) return '';
-      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-    }
-
     function renderProductInputs() {
       const tbody = document.getElementById('interactiveProductRows');
       tbody.innerHTML = '';
 
-      let displayedCount = 0;
-
       products.forEach((p) => {
         const hasActivity = (p.awal > 0 || p.laku > 0 || p.basi > 0 || p.retur > 0);
-        
         if (filterActiveOnly && !hasActivity) return;
         if (searchQuery && !p.name.toLowerCase().includes(searchQuery)) return;
 
-        displayedCount++;
-        // Formula baru: Sisa = Awal - (Laku + Basi + Retur)
+        // Rumus tanpa masuk: Sisa = Awal - (Laku + Basi + Retur)
         const sisa = p.awal - (p.laku + p.basi + p.retur);
         const omzet = p.laku * p.harga;
 
         const tr = document.createElement('tr');
-        tr.className = `hover:bg-gray-50/80 border-b border-gray-100 transition-colors ${hasActivity ? 'bg-emerald-50/30' : ''}`;
+        tr.className = `hover:bg-gray-50/70 border-b border-gray-100 ${hasActivity ? 'bg-emerald-50/30' : ''}`;
         tr.innerHTML = `
-          <td class="p-2 text-center font-mono font-bold text-gray-500 text-xs">${p.no}</td>
-          <td class="p-2">
-            <span class="font-bold text-xs text-gray-900 block truncate max-w-[230px]" title="${escapeHtml(p.name)}">${p.no}. ${escapeHtml(p.name)}</span>
+          <td class="p-1.5 text-center font-mono font-bold text-gray-500">${p.no}</td>
+          <td class="p-1.5">
+            <span class="font-bold text-gray-900 block truncate max-w-[210px]">${p.no}. ${p.name}</span>
           </td>
           <td class="p-1">
-            <input type="number" min="0" value="${p.awal === 0 ? '' : p.awal}" placeholder="0" class="w-full text-center text-xs p-1.5 bg-gray-50 rounded-lg border border-gray-200 font-mono"
+            <input type="number" min="0" value="${p.awal || ''}" placeholder="0" class="w-full text-center text-xs p-1 bg-gray-50 rounded border-gray-200 font-mono"
                    oninput="updateProductField(${p.id}, 'awal', this.value)"/>
           </td>
           <td class="p-1">
-            <input type="number" min="0" value="${p.laku === 0 ? '' : p.laku}" placeholder="0" class="w-full text-center text-xs p-1.5 bg-emerald-50 rounded-lg border border-emerald-300 text-emerald-800 font-extrabold font-mono"
+            <input type="number" min="0" value="${p.laku || ''}" placeholder="0" class="w-full text-center text-xs p-1 bg-emerald-50 rounded border-emerald-300 text-secondary font-bold font-mono"
                    oninput="updateProductField(${p.id}, 'laku', this.value)"/>
           </td>
           <td class="p-1">
-            <input type="number" min="0" value="${p.basi === 0 ? '' : p.basi}" placeholder="0" class="w-full text-center text-xs p-1.5 bg-red-50 rounded-lg border border-red-200 text-red-600 font-mono"
+            <input type="number" min="0" value="${p.basi || ''}" placeholder="0" class="w-full text-center text-xs p-1 bg-red-50 rounded border-red-200 text-red-600 font-mono"
                    oninput="updateProductField(${p.id}, 'basi', this.value)"/>
           </td>
           <td class="p-1">
-            <input type="number" min="0" value="${p.retur === 0 ? '' : p.retur}" placeholder="0" class="w-full text-center text-xs p-1.5 bg-gray-50 rounded-lg border border-gray-200 font-mono"
+            <input type="number" min="0" value="${p.retur || ''}" placeholder="0" class="w-full text-center text-xs p-1 bg-gray-50 rounded border-gray-200 font-mono"
                    oninput="updateProductField(${p.id}, 'retur', this.value)"/>
           </td>
           <td class="p-1 text-center font-mono font-bold text-gray-800 bg-gray-100">
             ${sisa}
           </td>
           <td class="p-1">
-            <input type="number" min="0" step="500" value="${p.harga}" class="w-full text-right text-xs p-1.5 bg-gray-50 rounded-lg border border-gray-200 font-mono"
+            <input type="number" min="0" step="500" value="${p.harga}" class="w-full text-right text-xs p-1 bg-gray-50 rounded border-gray-200 font-mono"
                    oninput="updateProductField(${p.id}, 'harga', this.value)"/>
           </td>
-          <td class="p-1">
-            <input type="number" min="0" step="100" value="${p.hpp}" class="w-full text-right text-xs p-1.5 bg-gray-50 rounded-lg border border-gray-200 font-mono"
+          <td class="p-1 role-owner-only">
+            <input type="number" min="0" step="100" value="${p.hpp}" class="w-full text-right text-xs p-1 bg-gray-50 rounded border-gray-200 font-mono"
                    oninput="updateProductField(${p.id}, 'hpp', this.value)"/>
           </td>
-          <td class="p-1.5 text-right font-mono font-extrabold text-primary">
+          <td class="p-1 text-right font-mono font-bold text-primary">
             ${formatRupiah(omzet)}
           </td>
         `;
         tbody.appendChild(tr);
       });
+    }
 
-      if (displayedCount === 0) {
-        const emptyTr = document.createElement('tr');
-        emptyTr.innerHTML = `
-          <td colspan="10" class="text-center py-8 text-gray-400 text-xs">
-            Tidak ada produk yang sesuai dengan filter pencarian.
-          </td>
-        `;
-        tbody.appendChild(emptyTr);
-      }
-
-      document.getElementById('filteredCountInfo').textContent = `Menampilkan ${displayedCount} dari 53 produk`;
+    function updateProductField(id, field, value) {
+      const item = products.find(p => p.id === id);
+      if (!item) return;
+      item[field] = parseFloat(value) || 0;
+      recalculateAll();
     }
 
     function recalculateAll() {
@@ -1042,12 +1364,10 @@
       let sumModalLaku = 0;
       let sumRugiBasi = 0;
 
-      const showAllInPrint = document.getElementById('chkShowAllInPrint') ? document.getElementById('chkShowAllInPrint').checked : true;
       const sheetBody = document.getElementById('sheetTableBody');
       sheetBody.innerHTML = '';
 
       products.forEach((p, idx) => {
-        // Formula baru: Sisa = Awal - (Laku + Basi + Retur)
         const sisa = p.awal - (p.laku + p.basi + p.retur);
         const omzet = p.laku * p.harga;
         const modal = p.laku * p.hpp;
@@ -1062,29 +1382,25 @@
         sumModalLaku += modal;
         sumRugiBasi += rugi;
 
-        const hasActivity = (p.awal > 0 || p.laku > 0 || p.basi > 0 || p.retur > 0);
-        if (!showAllInPrint && !hasActivity) {
-          return;
-        }
-
+        // Render ISO A4 row
         const row = document.createElement('tr');
-        row.className = idx % 2 === 1 ? 'bg-gray-50/60' : '';
+        row.className = idx % 2 === 1 ? 'bg-gray-50/70' : '';
         row.innerHTML = `
           <td class="py-0.5 px-1 text-center font-mono text-gray-500 border-r border-gray-200 text-[8px]">${p.no}</td>
-          <td class="py-0.5 px-1.5 font-semibold text-gray-900 border-r border-gray-200 truncate max-w-[190px] text-[8.5px]">${p.no}. ${escapeHtml(p.name)}</td>
+          <td class="py-0.5 px-1.5 font-semibold text-gray-900 border-r border-gray-200 truncate max-w-[180px] text-[8.5px]">${p.no}. ${p.name}</td>
           <td class="py-0.5 px-1 text-right font-mono text-gray-700 border-r border-gray-200 text-[8px]">${formatRupiah(p.harga)}</td>
-          <td class="py-0.5 px-1 text-right font-mono text-gray-500 border-r border-gray-200 text-[8px]">${formatRupiah(p.hpp)}</td>
+          <td class="py-0.5 px-1 text-right font-mono text-gray-500 border-r border-gray-200 text-[8px] role-owner-only">${formatRupiah(p.hpp)}</td>
           <td class="py-0.5 px-1 text-center font-mono border-r border-gray-200 text-[8px]">${p.awal || '-'}</td>
-          <td class="py-0.5 px-1 text-center font-mono font-bold text-emerald-700 border-r border-gray-200 text-[8px]">${p.laku || '-'}</td>
+          <td class="py-0.5 px-1 text-center font-mono font-bold text-secondary border-r border-gray-200 text-[8px]">${p.laku || '-'}</td>
           <td class="py-0.5 px-1 text-center font-mono text-red-600 border-r border-gray-200 text-[8px]">${p.basi || '-'}</td>
           <td class="py-0.5 px-1 text-center font-mono border-r border-gray-200 text-[8px]">${p.retur || '-'}</td>
-          <td class="py-0.5 px-1 text-center font-mono border-r border-gray-200 text-[8px] bg-gray-50 font-semibold">${sisa}</td>
+          <td class="py-0.5 px-1 text-center font-mono border-r border-gray-200 text-[8px]">${sisa}</td>
           <td class="py-0.5 px-1.5 text-right font-mono font-bold text-[8.5px]">${omzet > 0 ? formatRupiah(omzet) : '-'}</td>
         `;
         sheetBody.appendChild(row);
       });
 
-      // Update Editor Totals
+      // Update Totals
       document.getElementById('totAwal').textContent = sumAwal;
       document.getElementById('totLaku').textContent = sumLaku;
       document.getElementById('totBasi').textContent = sumBasi;
@@ -1092,7 +1408,6 @@
       document.getElementById('totSisa').textContent = sumSisa;
       document.getElementById('totOmzet').textContent = formatRupiah(sumOmzet);
 
-      // Update Sheet Totals
       document.getElementById('sheetTotAwal').textContent = sumAwal;
       document.getElementById('sheetTotLaku').textContent = sumLaku;
       document.getElementById('sheetTotBasi').textContent = sumBasi;
@@ -1100,7 +1415,7 @@
       document.getElementById('sheetTotSisa').textContent = sumSisa;
       document.getElementById('sheetTotOmzet').textContent = formatRupiah(sumOmzet);
 
-      // Expenses
+      // Costs & Profit
       const costPlastik = parseFloat(document.getElementById('costPlastik').value) || 0;
       const costEs = parseFloat(document.getElementById('costEs').value) || 0;
       const costLain = parseFloat(document.getElementById('costLain').value) || 0;
@@ -1108,15 +1423,12 @@
 
       const totalHppDanModal = sumModalLaku;
       const labaKotor = sumOmzet - totalHppDanModal;
-      const totalPengurang = totalOperasional + sumRugiBasi;
-      const labaBersih = labaKotor - totalPengurang;
+      const labaBersih = labaKotor - (totalOperasional + sumRugiBasi);
 
-      // Editor Display
       document.getElementById('dispTotalHpp').textContent = formatRupiah(totalHppDanModal);
       document.getElementById('dispTotalKerugianBasi').textContent = formatRupiah(sumRugiBasi);
       document.getElementById('dispLabaBersih').textContent = formatRupiah(labaBersih);
 
-      // Sheet Display
       document.getElementById('sheetLabaOmzet').textContent = formatRupiah(sumOmzet);
       document.getElementById('sheetLabaModal').textContent = formatRupiah(totalHppDanModal);
       document.getElementById('sheetLabaKotor').textContent = formatRupiah(labaKotor);
@@ -1125,7 +1437,7 @@
       document.getElementById('sheetCostBasi').textContent = formatRupiah(sumRugiBasi);
       document.getElementById('sheetLabaBersih').textContent = formatRupiah(labaBersih);
 
-      // Profit Split Calculation
+      // Profit Split
       const sliderVal = parseInt(document.getElementById('shareSlider').value, 10);
       const ownerPct = sliderVal;
       const operatorPct = 100 - sliderVal;
@@ -1133,30 +1445,25 @@
       document.getElementById('splitDisplayLabel').textContent = `${ownerPct}% / ${operatorPct}%`;
       document.getElementById('lblShareOwner').textContent = `${ownerPct}%`;
       document.getElementById('lblShareOperator').textContent = `${operatorPct}%`;
-
-      document.getElementById('sheetSplitRatio').textContent = `${ownerPct}/${operatorPct}`;
       document.getElementById('sheetPctOwner').textContent = `${ownerPct}%`;
       document.getElementById('sheetPctOperator').textContent = `${operatorPct}%`;
 
       const valOwner = Math.max(0, labaBersih * (ownerPct / 100));
       const valOperator = Math.max(0, labaBersih * (operatorPct / 100));
-
       document.getElementById('valShareOwner').textContent = formatRupiah(valOwner);
       document.getElementById('valShareOperator').textContent = formatRupiah(valOperator);
-
       document.getElementById('sheetValOwner').textContent = formatRupiah(valOwner);
       document.getElementById('sheetValOperator').textContent = formatRupiah(valOperator);
 
       const totalSetoranFisik = Math.max(0, sumOmzet - totalOperasional);
       document.getElementById('sheetTotalSetoran').textContent = formatRupiah(totalSetoranFisik);
 
-      // Cash Reconciliation
+      // Cash Audit
       const cashPaper = parseFloat(document.getElementById('cashPaper').value) || 0;
       const cashCoins = parseFloat(document.getElementById('cashCoins').value) || 0;
       const cashQRIS = parseFloat(document.getElementById('cashNonCash').value) || 0;
       const totalCashCounted = cashPaper + cashCoins + cashQRIS;
-      const targetCash = sumOmzet - totalOperasional;
-      const diff = totalCashCounted - targetCash;
+      const diff = totalCashCounted - totalSetoranFisik;
 
       document.getElementById('sheetCashPaper').textContent = formatRupiah(cashPaper);
       document.getElementById('sheetCashCoins').textContent = formatRupiah(cashCoins);
@@ -1168,263 +1475,159 @@
 
       if (Math.abs(diff) <= 100) {
         diffDisplay.textContent = "Rp 0 (Cocok)";
-        diffDisplay.className = "font-mono font-bold text-emerald-700";
         sheetDiff.textContent = "Selisih: Rp 0 (Cocok)";
-        sheetDiff.className = "font-bold text-emerald-700";
-        diffBox.className = "mt-2.5 flex items-center justify-between p-2 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold";
+        diffBox.className = "mt-2.5 flex items-center justify-between p-2 rounded-lg bg-emerald-50 text-secondary text-xs font-bold border border-emerald-200";
       } else if (diff > 0) {
         diffDisplay.textContent = `+${formatRupiah(diff)} (Lebih)`;
-        diffDisplay.className = "font-mono font-bold text-blue-700";
         sheetDiff.textContent = `Selisih: +${formatRupiah(diff)} (Lebih)`;
-        sheetDiff.className = "font-bold text-blue-700";
-        diffBox.className = "mt-2.5 flex items-center justify-between p-2 rounded-xl bg-blue-50 text-blue-800 border border-blue-200 text-xs font-bold";
+        diffBox.className = "mt-2.5 flex items-center justify-between p-2 rounded-lg bg-blue-50 text-blue-700 text-xs font-bold border border-blue-200";
       } else {
         diffDisplay.textContent = `-${formatRupiah(Math.abs(diff))} (Kurang)`;
-        diffDisplay.className = "font-mono font-bold text-red-600";
         sheetDiff.textContent = `Selisih: -${formatRupiah(Math.abs(diff))} (Kurang)`;
-        sheetDiff.className = "font-bold text-red-600";
-        diffBox.className = "mt-2.5 flex items-center justify-between p-2 rounded-xl bg-red-50 text-red-700 border border-red-200 text-xs font-bold";
+        diffBox.className = "mt-2.5 flex items-center justify-between p-2 rounded-lg bg-red-50 text-red-600 text-xs font-bold border border-red-200";
       }
     }
 
-    function triggerDownload() {
-      recalculateAll();
-      showToast('Menyiapkan format A4 lengkap 53 varian...');
-      setTimeout(() => {
-        window.print();
-      }, 350);
-    }
-
-    function shareWhatsApp() {
-      recalculateAll();
-      const docNo = document.getElementById('sheetDocNo').textContent;
-      const omzet = document.getElementById('sheetTotOmzet').textContent;
-      const laba = document.getElementById('sheetLabaBersih').textContent;
-      const kasir = document.getElementById('sheetKasir').textContent;
-      const cabang = document.getElementById('sheetCabang').textContent;
-
-      const text = encodeURIComponent(
-        `*REKAP LAPORAN PENJUALAN NGENAL RASA (53 PRODUK)*\n` +
-        `No: ${docNo}\n` +
-        `Cabang: ${cabang}\n` +
-        `Petugas: ${kasir}\n` +
-        `Total Omzet: ${omzet}\n` +
-        `Laba Bersih: ${laba}\n\n` +
-        `Dokumen A4 siap cetak & diekspor ke PDF resmi.`
-      );
-      window.open('https://api.whatsapp.com/send?text=' + text, '_blank');
-    }
-
-    // ==========================================
-    // HISTORI LAPORAN HARIAN (LOCALSTORAGE)
-    // ==========================================
-    const STORAGE_KEY = 'ngenal_rasa_daily_reports_v2';
-
-    function getSavedReports() {
-      try {
-        const data = localStorage.getItem(STORAGE_KEY);
-        return data ? JSON.parse(data) : [];
-      } catch (e) {
-        console.error('Failed reading localStorage', e);
-        return [];
+    function toggleActiveFilter() {
+      filterActiveOnly = !filterActiveOnly;
+      const btn = document.getElementById('btnFilterActive');
+      const lbl = document.getElementById('lblFilterActive');
+      if (filterActiveOnly) {
+        btn.className = "w-full sm:w-auto px-3 py-2 rounded-xl bg-primary text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm";
+        lbl.textContent = "Menampilkan Yang Terisi";
+      } else {
+        btn.className = "w-full sm:w-auto px-3 py-2 rounded-xl border border-gray-300 bg-white hover:bg-gray-50 text-xs font-semibold text-gray-700 flex items-center justify-center gap-1.5";
+        lbl.textContent = "Hanya Tampilkan Yang Terisi";
       }
+      renderProductInputs();
     }
 
-    function saveTodayReport() {
+    function filterProductRows() {
+      searchQuery = document.getElementById('productSearchInput').value.trim().toLowerCase();
+      renderProductInputs();
+    }
+
+    function loadSampleData() {
+      init53Products(true);
+      renderProductInputs();
       recalculateAll();
+      showToast("Data contoh 53 produk berhasil dimuat!");
+    }
 
-      const docNo = document.getElementById('sheetDocNo').textContent;
-      const tanggal = document.getElementById('inputTanggal').value;
-      const cabang = document.getElementById('inputCabang').value || 'Booth Ngenal Rasa';
-      const kasir = document.getElementById('inputKasir').value || 'Kasir';
-      const catatan = document.getElementById('inputCatatan').value || '';
-      
-      const totOmzetStr = document.getElementById('totOmzet').textContent;
-      const labaBersihStr = document.getElementById('dispLabaBersih').textContent;
+    function resetAllQuantitiesToZero() {
+      products.forEach(p => {
+        p.awal = 0;
+        p.laku = 0;
+        p.basi = 0;
+        p.retur = 0;
+      });
+      renderProductInputs();
+      recalculateAll();
+      showToast("Kuantitas dinolkan. Nama produk tetap utuh.");
+    }
 
-      const costPlastik = document.getElementById('costPlastik').value;
-      const costEs = document.getElementById('costEs').value;
-      const costLain = document.getElementById('costLain').value;
-      const shareSlider = document.getElementById('shareSlider').value;
-      const cashPaper = document.getElementById('cashPaper').value;
-      const cashCoins = document.getElementById('cashCoins').value;
-      const cashNonCash = document.getElementById('cashNonCash').value;
+    // ==========================================
+    // 6. HISTORI LAPORAN HARIAN
+    // ==========================================
 
-      const reportItem = {
-        id: 'rep_' + Date.now(),
-        timestamp: new Date().toISOString(),
-        docNo: docNo,
-        tanggal: tanggal,
-        cabang: cabang,
-        kasir: kasir,
-        catatan: catatan,
-        totOmzetStr: totOmzetStr,
-        labaBersihStr: labaBersihStr,
-        costs: {
-          plastik: costPlastik,
-          es: costEs,
-          lain: costLain
-        },
-        splitSlider: shareSlider,
-        cash: {
-          paper: cashPaper,
-          coins: cashCoins,
-          nonCash: cashNonCash
-        },
+    function saveCurrentDayReport() {
+      recalculateAll();
+      const report = {
+        id: Date.now(),
+        docNo: document.getElementById('sheetDocNo').textContent,
+        date: document.getElementById('sheetTanggal').textContent,
+        branch: document.getElementById('sheetCabang').textContent,
+        kasir: document.getElementById('sheetKasir').textContent,
+        omzet: document.getElementById('sheetTotOmzet').textContent,
+        laba: document.getElementById('sheetLabaBersih').textContent,
         products: JSON.parse(JSON.stringify(products))
       };
 
-      let list = getSavedReports();
-      // Replace existing if docNo matches, or unshift
-      const existingIdx = list.findIndex(item => item.docNo === docNo);
-      if (existingIdx >= 0) {
-        list[existingIdx] = reportItem;
-      } else {
-        list.unshift(reportItem);
-      }
+      let history = JSON.parse(localStorage.getItem('nr_pos_history') || '[]');
+      history.unshift(report);
+      localStorage.setItem('nr_pos_history', JSON.stringify(history));
 
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-        showToast(`Laporan [${docNo}] berhasil disimpan!`);
-      } catch (err) {
-        alert('Memori penyimpanan penuh atau tidak diizinkan oleh peramban.');
-      }
+      showToast(`Laporan ${report.docNo} berhasil disimpan ke histori!`);
     }
 
     function openHistoryModal() {
       renderHistoryList();
-      const modal = document.getElementById('historyModal');
-      modal.classList.remove('hidden');
+      document.getElementById('modalHistory').classList.remove('hidden');
     }
-
     function closeHistoryModal() {
-      const modal = document.getElementById('historyModal');
-      modal.classList.add('hidden');
+      document.getElementById('modalHistory').classList.add('hidden');
     }
 
     function renderHistoryList() {
       const container = document.getElementById('historyListContainer');
-      const list = getSavedReports();
+      const history = JSON.parse(localStorage.getItem('nr_pos_history') || '[]');
 
-      if (!list || list.length === 0) {
+      if (history.length === 0) {
         container.innerHTML = `
-          <div class="text-center py-12 px-4">
-            <span class="material-symbols-outlined text-4xl text-gray-300 mb-2">folder_open</span>
-            <p class="text-xs font-bold text-gray-700">Belum Ada Histori Laporan</p>
-            <p class="text-[11px] text-gray-500 max-w-sm mx-auto mt-1">
-              Klik tombol hijau <b>"Simpan Laporan Hari Ini"</b> di bagian atas untuk menyimpan rekap data harian Anda ke peramban ini.
-            </p>
+          <div class="text-center py-8 text-gray-400 text-xs">
+            <span class="material-symbols-outlined text-3xl mb-1">inventory_2</span>
+            <p>Belum ada rekaman laporan tersimpan.<br/>Klik <b>"Simpan Laporan Hari Ini"</b> untuk menyimpan rekap harian.</p>
           </div>
         `;
         return;
       }
 
       container.innerHTML = '';
-      list.forEach((item, index) => {
-        let tglFormatted = item.tanggal;
-        if (item.tanggal) {
-          try {
-            const d = new Date(item.tanggal);
-            tglFormatted = d.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
-          } catch (e) {}
-        }
-
-        const div = document.createElement('div');
-        div.className = "p-3.5 bg-gray-50 hover:bg-gray-100/80 rounded-xl border border-gray-200 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3";
-        div.innerHTML = `
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2 mb-1 flex-wrap">
-              <span class="font-mono text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">${item.docNo}</span>
-              <span class="text-xs font-bold text-gray-900">${tglFormatted}</span>
-              <span class="text-[11px] text-gray-500">• ${escapeHtml(item.cabang)}</span>
+      history.forEach((h, idx) => {
+        const item = document.createElement('div');
+        item.className = 'p-3 rounded-xl border border-gray-200 bg-gray-50 flex items-center justify-between text-xs';
+        item.innerHTML = `
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="font-bold text-gray-900">${h.docNo}</span>
+              <span class="text-[10px] bg-red-100 text-primary px-1.5 py-0.2 rounded font-bold">${h.branch}</span>
             </div>
-            <div class="text-[11px] text-gray-600 flex items-center gap-3 flex-wrap">
-              <span>Kasir: <strong class="text-gray-800">${escapeHtml(item.kasir)}</strong></span>
-              <span>Omzet: <strong class="text-emerald-700 font-mono">${item.totOmzetStr}</strong></span>
-              <span>Laba: <strong class="text-primary font-mono">${item.labaBersihStr}</strong></span>
-            </div>
+            <p class="text-gray-500 text-[11px]">${h.date} • Kasir: ${h.kasir}</p>
+            <p class="font-bold text-gray-800 mt-0.5">Omzet: <span class="text-primary">${h.omzet}</span></p>
           </div>
-          <div class="flex items-center gap-2 flex-shrink-0 self-end sm:self-center">
-            <button class="px-3 py-1.5 bg-primary text-white rounded-lg text-xs font-bold hover:bg-primary-container active:scale-95 transition-all flex items-center gap-1 shadow-sm" onclick="loadHistoryItem('${item.id}')">
-              <span class="material-symbols-outlined text-[15px]">file_open</span>
-              <span>Muat Data</span>
-            </button>
-            <button class="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Hapus rekaman ini" onclick="deleteHistoryItem('${item.id}')">
-              <span class="material-symbols-outlined text-[18px]">delete</span>
-            </button>
+          <div class="flex items-center gap-1">
+            <button onclick="restoreHistoryItem(${idx})" class="px-2.5 py-1.5 rounded-lg bg-primary hover:bg-primary-dark text-white font-bold text-[11px] shadow-sm">Buka Data</button>
+            <button onclick="deleteHistoryItem(${idx})" class="p-1.5 text-gray-400 hover:text-red-600"><span class="material-symbols-outlined text-[18px]">delete</span></button>
           </div>
         `;
-        container.appendChild(div);
+        container.appendChild(item);
       });
     }
 
-    function loadHistoryItem(id) {
-      const list = getSavedReports();
-      const item = list.find(r => r.id === id);
-      if (!item) {
-        showToast('Data histori tidak ditemukan.');
-        return;
-      }
+    function restoreHistoryItem(index) {
+      const history = JSON.parse(localStorage.getItem('nr_pos_history') || '[]');
+      const h = history[index];
+      if (!h) return;
 
-      if (item.tanggal) document.getElementById('inputTanggal').value = item.tanggal;
-      if (item.cabang) document.getElementById('inputCabang').value = item.cabang;
-      if (item.kasir) document.getElementById('inputKasir').value = item.kasir;
-      if (item.catatan !== undefined) document.getElementById('inputCatatan').value = item.catatan;
-
-      if (item.costs) {
-        document.getElementById('costPlastik').value = item.costs.plastik ?? 0;
-        document.getElementById('costEs').value = item.costs.es ?? 0;
-        document.getElementById('costLain').value = item.costs.lain ?? 0;
-      }
-      if (item.splitSlider !== undefined) {
-        document.getElementById('shareSlider').value = item.splitSlider;
-      }
-      if (item.cash) {
-        document.getElementById('cashPaper').value = item.cash.paper ?? 0;
-        document.getElementById('cashCoins').value = item.cash.coins ?? 0;
-        document.getElementById('cashNonCash').value = item.cash.nonCash ?? 0;
-      }
-
-      // Restore products
-      if (Array.isArray(item.products) && item.products.length > 0) {
-        products = item.products.map(p => ({
-          id: p.id,
-          no: p.no,
-          name: p.name,
-          awal: parseFloat(p.awal) || 0,
-          laku: parseFloat(p.laku) || 0,
-          basi: parseFloat(p.basi) || 0,
-          retur: parseFloat(p.retur) || 0,
-          harga: parseFloat(p.harga) || 3500,
-          hpp: parseFloat(p.hpp) || 2000
-        }));
-      }
-
+      products = h.products;
+      document.getElementById('inputKasir').value = h.kasir;
       renderProductInputs();
       recalculateAll();
       closeHistoryModal();
-      showToast(`Laporan [${item.docNo}] berhasil dimuat ke lembar kerja!`);
+      showToast(`Data laporan ${h.docNo} berhasil dipulihkan ke layar!`);
     }
 
-    function deleteHistoryItem(id) {
-      if (!confirm('Yakin ingin menghapus rekaman laporan ini dari histori?')) return;
-      let list = getSavedReports();
-      list = list.filter(r => r.id !== id);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    function deleteHistoryItem(index) {
+      let history = JSON.parse(localStorage.getItem('nr_pos_history') || '[]');
+      history.splice(index, 1);
+      localStorage.setItem('nr_pos_history', JSON.stringify(history));
       renderHistoryList();
-      showToast('Rekaman laporan berhasil dihapus.');
+      showToast('Laporan histori dihapus.');
     }
 
-    function clearAllHistory() {
-      if (!confirm('Hapus SEMUA riwayat laporan yang tersimpan di browser ini? Tindakan ini tidak dapat dibatalkan.')) return;
-      localStorage.removeItem(STORAGE_KEY);
-      renderHistoryList();
-      showToast('Seluruh riwayat laporan berhasil dibersihkan.');
-    }
-
+    // Auto Run on Startup
     window.addEventListener('DOMContentLoaded', () => {
-      initDate();
-      loadSampleData();
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      document.getElementById('inputTanggal').value = `${yyyy}-${mm}-${dd}`;
+
+      init53Products(true);
+      applyUserRole();
+      syncFormMeta();
+      recalculateAll();
     });
   </script>
-</body></html>
+</body>
+</html>
